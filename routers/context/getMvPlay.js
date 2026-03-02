@@ -86,7 +86,12 @@ module.exports = async (ctx, next) => {
 				const mvurls = response?.getMVUrl?.data;
 				if (!mvurls || typeof mvurls !== 'object' || Object.keys(mvurls).length === 0) {
 					ctx.status = 502;
-					ctx.body = { response: { error: 'Failed to get MV URL data' } };
+					ctx.body = {
+						response: {
+							data: null,
+							error: 'Failed to get MV URL data',
+						},
+					};
 					return;
 				}
 				const mvurlskey = Object.keys(mvurls)[0];

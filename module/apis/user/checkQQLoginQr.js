@@ -38,11 +38,21 @@ module.exports = async ({ method = 'get', params = {}, option = {} }) => {
 
 	const allCookie = () => Array.from(cookieMap.values());
 
-	const checkSigUrl = data.match(/(?:'((?:https?|ftp):\/\/[^\s/$.?#].[^\s]*)')/g)[0].replaceAll("'", '');
+	const urlMatch = data.match(/(?:'((?:https?|ftp):\/\/[^\s/$.?#].[^\s]*)')/g);
+	if (!urlMatch || !urlMatch[0]) {
+		return { status: 502, body: { error: 'Failed to extract checkSigUrl from response' } };
+	}
+	const checkSigUrl = urlMatch[0].replaceAll("'", '');
 	const checkSigRes = await fetch(checkSigUrl, { redirect: 'manual', headers: { Cookie: allCookie().join('; ') } });
-	const p_skey = checkSigRes.headers.get('Set-Cookie').match(/p_skey=([^;]+)/)[1];
+
+	const checkSigCookie = checkSigRes.headers.get('Set-Cookie');
+	const pSkeyMatch = checkSigCookie?.match(/p_skey=([^;]+)/);
+	if (!pSkeyMatch || !pSkeyMatch[1]) {
+		return { status: 502, body: { error: 'Failed to extract p_skey from response' } };
+	}
+	const p_skey = pSkeyMatch[1];
 	const gtk = getGtk(p_skey);
-	setCookie(checkSigRes.headers.get('Set-Cookie'));
+	setCookie(checkSigCookie);
 
 	const authorizeUrl = 'https://graph.qq.com/oauth2.0/authorize';
 	const getAuthorizeData = gtk => {
@@ -72,7 +82,13 @@ module.exports = async ({ method = 'get', params = {}, option = {} }) => {
 		},
 	});
 	setCookie(authorizeRes.headers.get('Set-Cookie'));
-	const code = authorizeRes.headers.get('Location').match(/[?&]code=([^&]+)/)[1];
+
+	const location = authorizeRes.headers.get('Location');
+	const codeMatch = location?.match(/[?&]code=([^&]+)/);
+	if (!codeMatch || !codeMatch[1]) {
+		return { status: 502, body: { error: 'Failed to extract code from authorize response' } };
+	}
+	const code = codeMatch[1];
 
 	const getFcgReqData = (g_tk, code) => {
 		const data = {
