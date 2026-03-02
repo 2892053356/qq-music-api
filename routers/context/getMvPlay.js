@@ -83,11 +83,21 @@ module.exports = async (ctx, next) => {
 		await UCommon(props)
 			.then(res => {
 				const response = res.data;
-				let mvurls = response.getMVUrl.data;
-				let mvurlskey = Object.keys(mvurls)[0];
-				let mp4_urls = mvurls[mvurlskey].mp4.map(item => item.freeflow_url);
-				let hls_urls = mvurls[mvurlskey].hls.map(item => item.freeflow_url);
-				let urls = [...mp4_urls, ...hls_urls];
+				const mvurls = response?.getMVUrl?.data;
+				if (!mvurls || typeof mvurls !== 'object' || Object.keys(mvurls).length === 0) {
+					ctx.status = 502;
+					ctx.body = {
+						response: {
+							data: null,
+							error: 'Failed to get MV URL data',
+						},
+					};
+					return;
+				}
+				const mvurlskey = Object.keys(mvurls)[0];
+				const mp4_urls = mvurls[mvurlskey]?.mp4?.map(item => item.freeflow_url) || [];
+				const hls_urls = mvurls[mvurlskey]?.hls?.map(item => item.freeflow_url) || [];
+				const urls = [...mp4_urls, ...hls_urls];
 				let play_urls = [];
 				let playLists = {};
 				urls.length &&
