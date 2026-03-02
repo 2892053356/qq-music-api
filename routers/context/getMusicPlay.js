@@ -1,16 +1,21 @@
 const { UCommon } = require('../../module');
 const { _guid } = require('../../module/config');
-const get = require('lodash.get');
 
-// songmid=003rJSwm3TechU
-// songmid=001yNIo41SJjuC,001wPuVc4ZiMhj
+const ALLOWED_QUALITIES = ['m4a', 128, 320, 'ape', 'flac'];
+const DEFAULT_QUALITY = 128;
+
+const parseQuality = quality => {
+	const parsed = parseInt(quality) || quality;
+	return ALLOWED_QUALITIES.includes(parsed) ? parsed : DEFAULT_QUALITY;
+};
+
 module.exports = async (ctx, next) => {
 	const uin = global.userInfo.uin || '0';
 	const songmid = ctx.query.songmid + '';
-	// response data only need play url value (all play)
 	const justPlayUrl = (ctx.query.resType || 'play') === 'play';
 	const guid = _guid ? _guid + '' : '1429839143';
-	let {quality = 128, mediaId} = ctx.query;
+	const { mediaId } = ctx.query;
+	const quality = parseQuality(ctx.query.quality);
 	const fileType = {
 		m4a: {
 			s: 'C400',
@@ -31,7 +36,7 @@ module.exports = async (ctx, next) => {
 		flac: {
 			s: 'F000',
 			e: '.flac',
-		}
+		},
 	};
 	const songmidList = songmid.split(',');
 	const fileInfo = fileType[quality];
@@ -82,20 +87,19 @@ module.exports = async (ctx, next) => {
 		await UCommon(props)
 			.then(res => {
 				const response = res.data;
-				const domain = get(response, 'req_0.data.sip', [])
-					.find(i => !i.startsWith('http://ws'))
-					|| get(response, 'req_0.data.sip[0]');
+				const domain =
+					response?.req_0?.data?.sip?.filter?.(i => !i.startsWith('http://ws'))?.[0] || response?.req_0?.data?.sip?.[0];
 
-				let playUrl = {};
-				get(response, 'req_0.data.midurlinfo', []).forEach((item) => {
+				const playUrl = {};
+				(response?.req_0?.data?.midurlinfo || []).forEach(item => {
 					playUrl[item.songmid] = {
-						url: item.purl ? `${domain}${item.purl}`  : '',
-						error: !item.purl && '暂无播放链接'
+						url: item.purl ? `${domain}${item.purl}` : '',
+						error: !item.purl && '暂无播放链接',
 					};
 				});
 				response.playUrl = playUrl;
 				ctx.body = {
-					data: justPlayUrl ? {playUrl} : response,
+					data: justPlayUrl ? { playUrl } : response,
 				};
 			})
 			.catch(error => {
@@ -106,7 +110,7 @@ module.exports = async (ctx, next) => {
 		ctx.body = {
 			data: {
 				message: 'no songmid',
-			}
+			},
 		};
 	}
 };

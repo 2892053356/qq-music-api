@@ -1,6 +1,10 @@
 const { UCommon } = require('../../module');
 const { commonParams } = require('../../module/config');
-const moment = require('moment');
+const dayjs = require('dayjs');
+const isoWeek = require('dayjs/plugin/isoWeek');
+const isoWeekYear = require('dayjs/plugin/isoWeekYear');
+dayjs.extend(isoWeek);
+dayjs.extend(isoWeekYear);
 
 module.exports = async (ctx, next) => {
 	// Desc: https://github.com/Rain120/qq-music-api/issues/14
@@ -9,10 +13,10 @@ module.exports = async (ctx, next) => {
 	const topId = +ctx.query.topId || 4;
 	const num = +ctx.query.limit || 20;
 	const offset = +ctx.query.page || 0;
-	const date = ctx.query.period || moment();
-	const week = moment(date).isoWeek();
-	const year = moment(date).year();
-	const period = `${year}_${week}`;
+	const date = ctx.query.period || dayjs();
+	const week = dayjs(date).isoWeek();
+	const isoWeekYearVal = dayjs(date).isoWeekYear();
+	const period = `${isoWeekYearVal}_${week}`;
 
 	const data = {
 		comm: {
