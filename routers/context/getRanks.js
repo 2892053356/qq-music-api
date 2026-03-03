@@ -1,9 +1,18 @@
 const { UCommon } = require('../../module');
 const { commonParams } = require('../../module/config');
 
+// 缓存 date-fns 模块（避免每次请求都导入）
+let dateFnsCache = null;
+async function getDateFns() {
+	if (!dateFnsCache) {
+		dateFnsCache = await import('date-fns');
+	}
+	return dateFnsCache;
+}
+
 module.exports = async (ctx, next) => {
-	// 异步加载 date-fns (ESM 模块)
-	const { getISOWeekYear, getISOWeek, parseISO } = await import('date-fns');
+	// 异步加载 date-fns (ESM 模块，带缓存)
+	const { getISOWeekYear, getISOWeek, parseISO } = await getDateFns();
 	
 	// Desc: https://github.com/sansenjian/qq-music-api/issues/14
 	// 1. topId is useless

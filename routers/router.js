@@ -12,12 +12,14 @@ router.get('/downloadQQMusic', context.getDownloadQQMusic);
 router.get('/getHotkey', context.getHotKey);
 
 // @deprecated Use query params instead: /getSearchByKey?key=xxx
-router.get('/getSearchByKey/:key', context.getSearchByKey);
+// Supports both path param and query param (backward compatible)
+router.get('/getSearchByKey/:key?', context.getSearchByKey);
 router.get('/getSearchByKey', context.getSearchByKey);
 
 // search smartbox
 // @deprecated Use query params instead: /getSmartbox?key=xxx
-router.get('/getSmartbox/:key', context.getSmartbox);
+// Supports both path param and query param (backward compatible)
+router.get('/getSmartbox/:key?', context.getSmartbox);
 router.get('/getSmartbox', context.getSmartbox);
 
 // 1
@@ -31,6 +33,9 @@ router.get('/getSongLists', context.getSongLists);
 router.post('/batchGetSongLists', context.batchGetSongLists);
 
 // getSongInfo
+// @deprecated Use query params instead: /getSongInfo?songmid=xxx
+// Supports both path param and query param (backward compatible)
+router.get('/getSongInfo/:songmid?', context.getSongInfo);
 router.get('/getSongInfo', context.getSongInfo);
 router.post('/batchGetSongInfo', context.batchGetSongInfo);
 
@@ -83,18 +88,21 @@ router.get('/getDigitalAlbumLists', context.getDigitalAlbumLists);
 // getLyric
 // songmid=003rJSwm3TechU
 // @deprecated Use query params instead: /getLyric?songmid=xxx
-router.get('/getLyric/:songmid', context.getLyric);
+// Supports both path param and query param (backward compatible)
+router.get('/getLyric/:songmid?', context.getLyric);
 router.get('/getLyric', context.getLyric);
 
 // songmid=003rJSwm3TechU
 // @deprecated Use query params instead: /getMusicPlay?songmid=xxx
-router.get('/getMusicPlay/:songmid', context.getMusicPlay);
+// Supports both path param and query param (backward compatible)
+router.get('/getMusicPlay/:songmid?', context.getMusicPlay);
 router.get('/getMusicPlay', context.getMusicPlay);
 
 // album
 // albummid=0016l2F430zMux
 // @deprecated Use query params instead: /getAlbumInfo?albummid=xxx
-router.get('/getAlbumInfo/:albummid', context.getAlbumInfo);
+// Supports both path param and query param (backward compatible)
+router.get('/getAlbumInfo/:albummid?', context.getAlbumInfo);
 router.get('/getAlbumInfo', context.getAlbumInfo);
 
 router.get('/getComments', context.getComments);
