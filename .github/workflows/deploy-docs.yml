@@ -1,4 +1,4 @@
-name: Deploy VitePress site to Pages
+name: Deploy Docs
 
 on:
   push:
@@ -26,8 +26,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
-          cache: 'npm'
+          node-version: 20
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
