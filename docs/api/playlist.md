@@ -111,7 +111,7 @@ curl "http://localhost:3200/getSongListDetail?disstid=123456789"
 
 批量获取多个歌单信息。
 
-**接口：** `GET /batchGetSongLists`
+**接口：** `POST /batchGetSongLists`
 
 **参数：**
 
@@ -122,7 +122,9 @@ curl "http://localhost:3200/getSongListDetail?disstid=123456789"
 **示例：**
 
 ```bash
-curl "http://localhost:3200/batchGetSongLists?disstid=123456,789012"
+curl -X POST http://localhost:3200/batchGetSongLists \
+  -H "Content-Type: application/json" \
+  -d '{"disstid": "123456,789012"}'
 ```
 
 ## 获取新碟上架

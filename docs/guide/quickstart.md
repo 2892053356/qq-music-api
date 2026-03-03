@@ -6,7 +6,7 @@
 
 ### 请求格式
 
-所有 API 接口都支持 GET 和 POST 请求方式。
+本项目提供 **38** 个 API 接口，其中 **34** 个支持 GET 请求，**4** 个支持 POST 请求。
 
 **GET 请求示例：**
 
@@ -17,10 +17,15 @@ curl http://localhost:3200/getRanks?limit=10
 **POST 请求示例：**
 
 ```bash
-curl -X POST http://localhost:3200/getRanks \
+curl -X POST http://localhost:3200/batchGetSongLists \
   -H "Content-Type: application/json" \
-  -d '{"limit": 10}'
+  -d '{"disstid": "123456,789012"}'
 ```
+
+**支持 POST 的接口：**
+- `/batchGetSongLists` - 批量获取歌单
+- `/batchGetSongInfo` - 批量获取歌曲信息
+- `/checkQQLoginQr` - 检查 QQ 登录二维码
 
 ### 响应格式
 
@@ -30,9 +35,7 @@ curl -X POST http://localhost:3200/getRanks \
 {
   "code": 0,
   "msg": "success",
-  "data": {
-    // 具体数据
-  }
+  "data": {}
 }
 ```
 

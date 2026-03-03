@@ -81,7 +81,7 @@ node app.js
 | axios | ^1.6.0 | 修复安全漏洞 CVE-2021-3749 |
 | koa | ^2.15.0 | 框架更新 |
 | koa-bodyparser | ^4.4.0 | 解析器更新 |
-| @koa/router | ^12.0.0 | 替代 koa-router |
+| @koa/router | ^15.3.1 | 替代 koa-router |
 | koa-static | ^5.0.0 | 静态文件服务 |
 | date-fns | ^4.1.0 | 日期处理库 (轻量级) |
 
@@ -97,7 +97,7 @@ node app.js
 | @babel/* | ^7.23.0 | 编译工具 |
 | nodemon | ^3.0.0 | 开发热重载 |
 | vitepress | ^1.6.4 | 文档工具 (基于 Vite) |
-| vue | ^3.5.0 | 渐进式 JS 框架 |
+| vue | ^3.5.29 | 渐进式 JS 框架 |
 
 **已移除的依赖**
 - `colors` - 存在安全问题，已用 chalk 替代
@@ -157,7 +157,7 @@ node app.js
 
 ### 使用文档
 
-使用 `apis` 详见 [文档](https://rain120.github.io/qq-music-api/#/)
+使用 `apis` 详见 [文档](https://sansenjian.github.io/qq-music-api/)
 
 ### 关于项目
 

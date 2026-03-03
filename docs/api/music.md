@@ -95,7 +95,7 @@ curl "http://localhost:3200/getAlbumInfo?albummid=0016l2F430zMux"
     "albumName": "专辑名",
     "singerName": "歌手名",
     "publicTime": "2020-01-01",
-    "songs": [...]
+    "songs": []
   }
 }
 ```
