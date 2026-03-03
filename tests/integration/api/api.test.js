@@ -4,16 +4,21 @@ const bodyParser = require('koa-bodyparser');
 const router = require('../../../routers/router');
 const cors = require('../../../middlewares/koa-cors');
 
-jest.mock('axios', () => ({
-	get: jest.fn(),
-	post: jest.fn(),
-	defaults: {
-		withCredentials: true,
-		timeout: 10000,
-		headers: { post: {} },
-		responseType: 'json',
-	},
-}));
+jest.mock('axios', () => {
+	const mockFn = jest.fn();
+	return {
+		get: mockFn,
+		post: mockFn,
+		GET: mockFn,
+		POST: mockFn,
+		defaults: {
+			withCredentials: true,
+			timeout: 10000,
+			headers: { post: {} },
+			responseType: 'json',
+		},
+	};
+});
 
 const axios = require('axios');
 
