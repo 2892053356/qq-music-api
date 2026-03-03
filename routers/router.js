@@ -11,58 +11,58 @@ router.get('/downloadQQMusic', context.getDownloadQQMusic);
 
 router.get('/getHotkey', context.getHotKey);
 
-router.get('/getSearchByKey/:key?/:limit?/:page?/:catZhida?', context.getSearchByKey);
+router.get('/getSearchByKey', context.getSearchByKey);
 
 // search smartbox
-router.get('/getSmartbox/:key?', context.getSmartbox);
+router.get('/getSmartbox', context.getSmartbox);
 
 // 1
 router.get('/getSongListCategories', context.getSongListCategories);
 
-router.get('/getSongLists/:page?/:limit?/:categoryId?/:sortId?', context.getSongLists);
+router.get('/getSongLists', context.getSongLists);
 
 router.post('/batchGetSongLists', context.batchGetSongLists);
 
 // getSongInfo
-router.get('/getSongInfo/:songmid?/:songid?', context.getSongInfo);
+router.get('/getSongInfo', context.getSongInfo);
 router.post('/batchGetSongInfo', context.batchGetSongInfo);
 
 // 4
 // disstid=7011264340
-router.get('/getSongListDetail/:disstid?', context.getSongListDetail);
+router.get('/getSongListDetail', context.getSongListDetail);
 
 // newDisk
-router.get('/getNewDisks/:page?/:limit?', context.getNewDisks);
+router.get('/getNewDisks', context.getNewDisks);
 
 // getMvByTag
 router.get('/getMvByTag', context.getMvByTag);
 
 // MV
 // area_id=15&version_id=7
-router.get('/getMv/:area_id?/:version_id?/:limit?/:page?', context.getMv);
+router.get('/getMv', context.getMv);
 
 // getSingerList
-router.get('/getSingerList/:area?/:sex?/:genre?/:index?/:page?', context.getSingerList);
+router.get('/getSingerList', context.getSingerList);
 
 // getSimilarSinger
 // singermid=0025NhlN2yWrP4
-router.get('/getSimilarSinger/:singermid?', context.getSimilarSinger);
+router.get('/getSimilarSinger', context.getSimilarSinger);
 
 // getSingerAlbum
 // singermid=0025NhlN2yWrP4
-router.get('/getSingerAlbum/:singermid?/:limit?/:page?', context.getSingerAlbum);
+router.get('/getSingerAlbum', context.getSingerAlbum);
 
-router.get('/getSingerHotsong/:singermid?/:limit?/:page?', context.getSingerHotsong);
+router.get('/getSingerHotsong', context.getSingerHotsong);
 
 /**
  * @description: getSingerMv
  * @param order: time(fan upload) || listen(singer all)
  */
-router.get('/getSingerMv/:singermid?/:limit?/:order?', context.getSingerMv);
+router.get('/getSingerMv', context.getSingerMv);
 
-router.get('/getSingerDesc/:singermid?', context.getSingerDesc);
+router.get('/getSingerDesc', context.getSingerDesc);
 
-router.get('/getSingerStarNum/:singermid?', context.getSingerStarNum);
+router.get('/getSingerStarNum', context.getSingerStarNum);
 
 // radio
 router.get('/getRadioLists', context.getRadioLists);
@@ -73,31 +73,28 @@ router.get('/getDigitalAlbumLists', context.getDigitalAlbumLists);
 // music
 // getLyric
 // songmid=003rJSwm3TechU
-router.get('/getLyric/:songmid?/:isFormat?', context.getLyric);
+router.get('/getLyric', context.getLyric);
 
 // songmid=003rJSwm3TechU
-router.get('/getMusicPlay/:songmid?', context.getMusicPlay);
+router.get('/getMusicPlay', context.getMusicPlay);
 
 // album
 // albummid=0016l2F430zMux
-router.get('/getAlbumInfo/:albummid?', context.getAlbumInfo);
+router.get('/getAlbumInfo', context.getAlbumInfo);
 
-router.get(
-	'/getComments/:id?/:rootcommentid?/:cid?/:pagesize?/:pagenum?/:cmd?/:reqtype?/:biztype?',
-	context.getComments,
-);
+router.get('/getComments', context.getComments);
 
 // recommend
 router.get('/getRecommend', context.getRecommend);
 
 // mv play
-router.get('/getMvPlay/:vid?', context.getMvPlay);
+router.get('/getMvPlay', context.getMvPlay);
 
 // rankList: getTopLists
 router.get('/getTopLists', context.getTopLists);
 
 // ranks
-router.get('/getRanks/:topId?/:limit?/:page?', context.getRanks);
+router.get('/getRanks', context.getRanks);
 
 // ticket
 router.get('/getTicketInfo', context.getTicketInfo);
