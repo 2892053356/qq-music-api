@@ -1,8 +1,11 @@
 const request = require('supertest');
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
-const router = require('../../../routers/router');
-const cors = require('../../../middlewares/koa-cors');
+const routerModule = require('../../../routers/router');
+const corsModule = require('../../../middlewares/koa-cors');
+
+const router = routerModule.default || routerModule;
+const cors = corsModule.default || corsModule;
 
 jest.mock('axios', () => {
 	const mockFn = jest.fn().mockResolvedValue({ data: { code: 0, data: {} } });
@@ -94,9 +97,10 @@ describe('API Integration Tests', () => {
 		test('should batch get song info', async () => {
 			const response = await request(callback)
 				.post('/batchGetSongInfo')
-				.send({ songmids: 'test1,test2' })
+				.send({ songs: [['test1', '1'], ['test2', '2']] })
 				.expect(200);
 			expect(response.body).toBeDefined();
+			expect(mockService).toHaveBeenCalledTimes(2);
 		}, 10000);
 	});
 
@@ -108,6 +112,18 @@ describe('API Integration Tests', () => {
 		test('should return 400 for missing search key', async () => {
 			const response = await request(callback).get('/getSearchByKey').expect(400);
 			expect(response.body.response).toBe('search key is null');
+		});
+
+		test('should return 500 when downstream request rejects', async () => {
+			mockService.mockRejectedValueOnce(new Error('downstream failure'));
+			const response = await request(callback).get('/getHotkey').expect(500);
+			expect(response.body.error).toBeDefined();
+		});
+
+		test('should preserve non-success business response code from downstream', async () => {
+			mockService.mockResolvedValueOnce({ data: { code: 1, message: 'mock business error' } });
+			const response = await request(callback).get('/getHotkey').expect(200);
+			expect(response.body.response).toEqual({ code: 1, message: 'mock business error' });
 		});
 	});
 

@@ -11,7 +11,8 @@ jest.mock('axios', () => {
 });
 
 const axios = require('axios');
-const request = require('../../../util/request');
+const requestModule = require('../../../util/request');
+const request = requestModule.default || requestModule;
 
 describe('request util', () => {
 	let mockService;

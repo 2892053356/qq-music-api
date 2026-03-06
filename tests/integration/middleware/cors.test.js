@@ -1,4 +1,5 @@
-const cors = require('../../../middlewares/koa-cors');
+const corsModule = require('../../../middlewares/koa-cors');
+const cors = corsModule.default || corsModule;
 
 describe('CORS Middleware', () => {
   test('should set CORS headers', async () => {

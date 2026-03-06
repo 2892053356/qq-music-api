@@ -3,7 +3,7 @@ import { KoaContext, Controller } from '../types';
 const controller: Controller = async (ctx, next) => {
 	const { ptqrtoken, qrsig } = ctx.query.ptqrtoken
 		? ctx.query
-		: ctx.body || {};
+		: ctx.request.body || {};
 
   const params = { ptqrtoken, qrsig };
 

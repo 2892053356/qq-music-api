@@ -2,7 +2,7 @@ import { KoaContext, Controller } from '../types';
 
 const controller: Controller = async (ctx, next) => {
   const { area = -100, sex = -100, genre = -100, index = -100, page = 1 } = ctx.query;
-  
+
   const pageNum = Number(page);
   const data = {
     comm: {
@@ -36,7 +36,6 @@ const controller: Controller = async (ctx, next) => {
   
   await (require('../../module').UCommon)(props)
     .then(res => {
-      console.log(res);
       const response = res.data;
       ctx.status = 200;
       ctx.body = {
@@ -45,7 +44,11 @@ const controller: Controller = async (ctx, next) => {
       };
     })
     .catch(error => {
-      console.log('error', error);
+      console.error('getSingerList error:', error);
+      ctx.status = 500;
+      ctx.body = {
+        error: '服务器内部错误'
+      };
     });
 };
 

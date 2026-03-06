@@ -19,6 +19,7 @@ module.exports = {
     }
   },
   setupFilesAfterEnv: ['<rootDir>/tests/setup/jest.setup.js'],
+  modulePathIgnorePatterns: ['<rootDir>/dist/'],
   testTimeout: 10000,
   verbose: true,
   moduleNameMapper: {

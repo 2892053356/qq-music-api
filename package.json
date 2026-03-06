@@ -5,7 +5,7 @@
     "access": "public"
   },
   "description": "QQ Music API - QQ音乐API koa2实现",
-  "main": "index.ts",
+  "main": "dist/index.js",
   "scripts": {
     "dev": "tsx app.ts",
     "build": "tsc",

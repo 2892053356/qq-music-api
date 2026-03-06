@@ -1,7 +1,7 @@
 import { KoaContext, Controller } from '../types';
 
 const controller: Controller = async (ctx, next) => {
-	const { limit: ein = 19, page: sin = 0, sortId = 5, categoryIds = [10000000] } = ctx.body;
+	const { limit: ein = 19, page: sin = 0, sortId = 5, categoryIds = [10000000] } = ctx.request.body || {};
 
   const params = {
     sortId,

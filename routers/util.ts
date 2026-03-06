@@ -125,8 +125,8 @@ export function createPostController<T extends ApiOptions>(
 ): Controller {
   return async (ctx: KoaContext, next: () => Promise<void>) => {
     try {
-      // 从 body 中提取参数
-      const params = ctx.body || {};
+      // 从 request.body 中提取参数
+      const params = ctx.request.body || {};
 
       // 验证参数
       if (options?.validator) {

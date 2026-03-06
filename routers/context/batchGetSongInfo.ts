@@ -1,7 +1,7 @@
 import { KoaContext, Controller } from '../types';
 
 const controller: Controller = async (ctx, next) => {
-	const { songs } = ctx.body;
+	const { songs } = ctx.request.body || {};
 
   const params = Object.assign({
     format: 'json',
@@ -21,7 +21,6 @@ const controller: Controller = async (ctx, next) => {
   const data = await Promise.all(
     (songs || []).map(async song => {
       const [song_mid, song_id = ''] = song;
-      console.log(song_mid, song_id);
       return await (require('../../module').UCommon)({
         ...props,
         params: {
