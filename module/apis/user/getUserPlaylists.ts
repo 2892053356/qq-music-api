@@ -6,11 +6,6 @@ interface UserPlaylistItem {
   [key: string]: unknown;
 }
 
-interface UserPlaylistsPayload {
-  playlists: UserPlaylistItem[];
-  raw: Record<string, unknown>;
-}
-
 const DEBUG_ENABLED = process.env.DEBUG === 'true';
 
 const debugLog = (message: string, payload?: unknown) => {
@@ -80,30 +75,78 @@ export const getUserPlaylists = async (params: {
 }): Promise<ApiResponse> => {
   const { uin, offset = 0, limit = 30 } = params;
 
-  const url = 'https://c.y.qq.com/musicu/fcg-bin/fcg_get_profile_homepage.fcg';
+  // 使用 u.y.qq.com 的 musicu.fcg 统一网关
+  const url = '/cgi-bin/musicu.fcg';
+  const page = Math.floor(offset / limit) + 1;
+  const pageOffset = offset % limit;
 
-  const data = {
-    format: 'json',
-    platform: 'yqq',
-    ct: 20,
-    uin,
-    userid: uin,
-    reqfrom: 1,
-    reqtype: 0,
-    skip: offset,
-    num: limit
+  // 构造 JSON-RPC 风格的请求 - 参考官方文档
+  const requestData = {
+    comm: {
+      ct: 24,
+      cv: 0,
+      format: 'json',
+      inCharset: 'utf-8',
+      outCharset: 'utf-8',
+      notice: 0,
+      platform: 'yqq.json',
+      needNewCode: 1,
+      uin: Number.parseInt(uin, 10),
+      g_tk: 0
+    },
+    req_1: {
+      module: 'music.musiclist.MusicListServer',
+      method: 'get_music_lists',
+      param: {
+        uin: Number.parseInt(uin, 10),
+        page,
+        num: limit,
+        type: 1 // 1 表示创建的歌单
+      }
+    }
   };
 
   try {
-    const response = await request<Record<string, any>>(url, 'GET', {
-      params: data,
-      headers: {
-        Referer: `https://y.qq.com/portal/profile.html?uin=${uin}`,
-        Cookie: global.userInfo?.cookie || ''
+    debugLog('request meta', {
+      url,
+      uin,
+      offset,
+      limit,
+      page,
+      pageOffset,
+      hasGlobalCookie: Boolean(global.userInfo?.cookie),
+      cookieLength: global.userInfo?.cookie?.length || 0
+    });
+
+    const response = await request<Record<string, any>>({
+      url,
+      method: 'GET',
+      isUUrl: 'y',
+      options: {
+        params: {
+          format: 'json',
+          inCharset: 'utf-8',
+          outCharset: 'utf-8',
+          notice: 0,
+          platform: 'yqq.json',
+          needNewCode: 1,
+          data: JSON.stringify(requestData)
+        },
+        headers: {
+          Referer: `https://y.qq.com/portal/profile.html?uin=${uin}`,
+          Cookie: global.userInfo?.cookie || ''
+        }
       }
-    }, 'u');
+    });
 
     const payload = response.data;
+
+    debugLog('upstream payload summary', {
+      topLevelKeys: payload && typeof payload === 'object' ? Object.keys(payload) : null,
+      code: payload?.code,
+      hasData: Boolean(payload?.data),
+      dataKeys: payload?.data && typeof payload.data === 'object' ? Object.keys(payload.data) : []
+    });
 
     if (!payload || typeof payload !== 'object') {
       debugLog('invalid payload received', payload);
@@ -115,12 +158,17 @@ export const getUserPlaylists = async (params: {
       return errorResponse(getErrorMessage(payload), 502);
     }
 
-    const responseData: UserPlaylistsPayload = {
-      playlists: extractPlaylists(payload),
-      raw: payload
-    };
+    const upstreamPlaylists = extractPlaylists(payload);
+    const playlists = pageOffset > 0 ? upstreamPlaylists.slice(pageOffset, pageOffset + limit) : upstreamPlaylists;
 
-    return customResponse({ code: 0, data: responseData }, 200);
+    debugLog('final response contract', {
+      wrapper: 'customResponse',
+      expectedBodyShape: { response: { code: 0, data: { playlists: '...' } } },
+      upstreamLength: upstreamPlaylists.length,
+      normalizedLength: playlists.length
+    });
+
+    return customResponse({ response: { code: 0, data: { playlists } } }, 200);
   } catch (error) {
     console.error('获取用户歌单失败:', error);
     return errorResponse((error as Error).message || '获取用户歌单失败', 502);

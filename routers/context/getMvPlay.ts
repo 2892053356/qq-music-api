@@ -75,22 +75,22 @@ const controller: Controller = async (ctx, next) => {
         }
         
         const mvurlskey = Object.keys(mvurls)[0];
-        const mp4_urls = mvurls[mvurlskey]?.mp4?.map(item => item.freeflow_url) || [];
-        const hls_urls = mvurls[mvurlskey]?.hls?.map(item => item.freeflow_url) || [];
+        const mp4_urls = mvurls[mvurlskey]?.mp4?.map((item: any) => item.freeflow_url) || [];
+        const hls_urls = mvurls[mvurlskey]?.hls?.map((item: any) => item.freeflow_url) || [];
         const urls = [...mp4_urls, ...hls_urls];
         
         let play_urls: string[] = [];
         let playLists: Record<string, string[]> = {};
         
         if (urls.length) {
-          urls.forEach(url => {
+          urls.forEach((url: string[]) => {
             play_urls = [...play_urls, ...url];
           });
           playLists = {
-            f10: play_urls.filter(item => /\.f10\.mp4/.test(item)),
-            f20: play_urls.filter(item => /\.f20\.mp4/.test(item)),
-            f30: play_urls.filter(item => /\.f30\.mp4/.test(item)),
-            f40: play_urls.filter(item => /\.f40\.mp4/.test(item))
+            f10: play_urls.filter((item: string) => /\.f10\.mp4/.test(item)),
+            f20: play_urls.filter((item: string) => /\.f20\.mp4/.test(item)),
+            f30: play_urls.filter((item: string) => /\.f30\.mp4/.test(item)),
+            f40: play_urls.filter((item: string) => /\.f40\.mp4/.test(item))
           };
         }
         

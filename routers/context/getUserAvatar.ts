@@ -3,9 +3,12 @@ import { getUserAvatar } from '../../module';
 
 // 获取 QQ 用户头像
 export default async (ctx: Context, next: Next) => {
-  const { k, uin, size = 140 } = ctx.query;
+  const rawK = Array.isArray(ctx.query.k) ? ctx.query.k[0] : ctx.query.k;
+  const rawUin = Array.isArray(ctx.query.uin) ? ctx.query.uin[0] : ctx.query.uin;
+  const rawSize = Array.isArray(ctx.query.size) ? ctx.query.size[0] : ctx.query.size;
+  const parsedSize = rawSize ? Number(rawSize) : 140;
 
-  if (!k && !uin) {
+  if (!rawK && !rawUin) {
     ctx.status = 400;
     ctx.body = {
       error: '缺少 k 或 uin 参数'
@@ -13,11 +16,19 @@ export default async (ctx: Context, next: Next) => {
     return;
   }
 
+  if (!Number.isFinite(parsedSize) || parsedSize <= 0) {
+    ctx.status = 400;
+    ctx.body = {
+      error: 'size 参数无效'
+    };
+    return;
+  }
+
   try {
     const result = await getUserAvatar({
-      k: k as string,
-      uin: uin as string,
-      size: Number(size)
+      k: rawK,
+      uin: rawUin,
+      size: parsedSize
     });
 
     ctx.status = 200;

@@ -18,7 +18,7 @@ const controller: Controller = async (ctx, next) => {
 
   const data = await Promise.all(
     categoryIds.map(
-      async categoryId =>
+      async (categoryId: number) =>
         await songLists({
           ...props,
           params: {

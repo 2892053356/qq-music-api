@@ -335,6 +335,7 @@ describe('API Integration Tests', () => {
         )
         .mockResolvedValueOnce(
           createFetchResponse({
+            status: 302,
             headers: {
               Location: 'https://y.qq.com/portal/wx_redirect.html?code=mockAuthCode',
               'Set-Cookie': 'graph_key=graphValue; Path=/; HttpOnly'

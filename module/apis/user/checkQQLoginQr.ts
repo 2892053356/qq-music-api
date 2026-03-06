@@ -11,6 +11,13 @@ interface LoginSession {
 }
 
 const REQUEST_TIMEOUT_MS = 10000;
+const DEBUG_ENABLED = process.env.DEBUG === 'true';
+
+const debugLog = (message: string, payload?: unknown) => {
+  if (DEBUG_ENABLED) {
+    console.log(`[checkQQLoginQr] ${message}`, payload ?? '');
+  }
+};
 
 const parseSetCookie = (setCookieHeader: string | null): string[] => {
   if (!setCookieHeader) return [];
@@ -130,9 +137,9 @@ const checkQQLoginQr: ApiFunction = async ({ method = 'get', params = {}, option
       data.append('scope', 'get_user_info,get_app_friends');
       data.append('state', 'state');
       data.append('switch', '');
-      data.append('from_ptlogin', 1 as any);
-      data.append('src', 1 as any);
-      data.append('update_auth', 1 as any);
+      data.append('from_ptlogin', '1');
+      data.append('src', '1');
+      data.append('update_auth', '1');
       data.append('openapi', '1010_1030');
       data.append('g_tk', g_tk.toString());
       data.append('auth_time', new Date().toString());
@@ -151,9 +158,23 @@ const checkQQLoginQr: ApiFunction = async ({ method = 'get', params = {}, option
     setCookie(authorizeRes.headers.get('Set-Cookie'));
 
     const location = authorizeRes.headers.get('Location');
-    const codeMatch = location?.match(/[?&]code=([^&]+)/);
+    const contentType = authorizeRes.headers.get('Content-Type');
+
+    debugLog('authorize response meta', {
+      status: authorizeRes.status,
+      redirected: authorizeRes.redirected,
+      hasLocation: Boolean(location),
+      contentType
+    });
+
+    if (authorizeRes.status < 300 || authorizeRes.status >= 400 || !location) {
+      return errorResponse('授权响应异常，未返回跳转地址', 502);
+    }
+
+    const codeMatch = location.match(/[?&]code=([^&]+)/);
     if (!codeMatch || !codeMatch[1]) {
-      return errorResponse('Failed to extract code from authorize response', 502);
+      debugLog('authorize location parse failed', { location });
+      return errorResponse('授权响应中未找到 code 参数', 502);
     }
     const code = codeMatch[1];
 

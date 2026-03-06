@@ -51,6 +51,7 @@ curl "http://localhost:3200/user/getUserPlaylists?uin=123456789"
 
 - 部分场景依赖有效登录态
 - 如果返回异常，优先检查 Cookie 是否过期
+- 当前接口对外返回标准化后的 `playlists` 字段，不透出上游原始 payload
 - 建议结合 [`认证与登录`](/guide/authentication) 页面一起使用
 
 ## 获取用户头像

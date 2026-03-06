@@ -20,7 +20,7 @@ const controller: Controller = async (ctx, next) => {
   };
 
   const data = await Promise.all(
-    (songs || []).map(async song => {
+    (songs || []).map(async (song: any[]) => {
       const [song_mid, song_id = ''] = song;
       return await UCommon({
         ...props,
