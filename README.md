@@ -18,7 +18,7 @@
 
 ### API 结构图
 
-> 目前暂时没有时间做登录模块的接口，欢迎各位大佬给我 `PR`, 阿里嘎多
+> 当前版本已包含扫码登录相关接口，并已完成 TypeScript 迁移。
 
 ![qq-music](./screenshot/qq-music.png)
 
@@ -26,7 +26,7 @@
 
 ### 环境要求
 
-> 本项目采用 `koa2`，需要 Node.js 18.0.0+
+> 本项目基于 `Koa 2 + TypeScript`，需要 Node.js 20.0.0+
 
 ```
 node -v
@@ -61,13 +61,16 @@ spawn('node', [qqMusicPath], {
 
 ### 🔨 项目启动
 ```
-// npm i -g nodemon
-npm run start
+# 开发模式（推荐）
+npm run dev
 
-// or don't install nodemon
-node app.js
+# 生产构建
+npm run build
+
+# 生产运行
+npm run start
 ```
-项目监听端口是 `3200`
+项目默认监听端口为 `3200`
 
 ### 📋 依赖更新 (2026-03)
 
@@ -152,6 +155,7 @@ node app.js
 - ✅ **票务信息** - 获取音乐演出票务信息
 - ✅ **评论信息** - 获取歌曲、专辑等评论数据
 - ✅ **首页推荐** - 获取 APP 首页推荐内容
+- ✅ **扫码登录** - 支持获取 QQ 登录二维码并轮询登录状态
 
 ### 使用文档
 
