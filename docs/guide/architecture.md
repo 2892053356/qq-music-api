@@ -8,7 +8,7 @@
 
 ### 1. 统一的 API 类型定义
 
-**文件位置**: [`types/api.ts`](/types/api.ts)
+**文件位置**: [`types/api.ts`](../../types/api.ts)
 
 定义了项目中所有 API 函数使用的通用类型：
 
@@ -49,7 +49,7 @@ export type ApiFunction<T extends ApiOptions = ApiOptions> = (
 
 ### 2. API 响应工具函数
 
-**文件位置**: [`util/apiResponse.ts`](/util/apiResponse.ts)
+**文件位置**: [`util/apiResponse.ts`](../../util/apiResponse.ts)
 
 提供了统一的 API 响应处理工具：
 
@@ -114,7 +114,7 @@ export default async (options: ApiOptions) => {
 
 ### 3. Controller 工厂函数
 
-**文件位置**: [`routers/util.ts`](/routers/util.ts)
+**文件位置**: [`routers/util.ts`](../../routers/util.ts)
 
 提供了创建 Controller 的工厂函数：
 
@@ -169,7 +169,7 @@ export default createController(
 
 ### 4. 统一的全局类型
 
-**文件位置**: [`types/global.d.ts`](/types/global.d.ts)
+**文件位置**: [`types/global.d.ts`](../../types/global.d.ts)
 
 定义了全局 `userInfo` 对象的类型：
 

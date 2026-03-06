@@ -1,28 +1,33 @@
 jest.mock('axios', () => {
-	const service = jest.fn(() => Promise.resolve({ data: {}, config: { url: 'test' } }));
+	const service = jest.fn(config => Promise.resolve({ data: {}, config }));
 	service.interceptors = {
 		request: { use: jest.fn() },
-		response: { use: jest.fn() },
+		response: { use: jest.fn() }
 	};
 	return {
 		create: jest.fn(() => service),
-		defaults: { headers: { post: {} } },
+		defaults: { headers: { post: {} } }
 	};
 });
 
-const axios = require('axios');
-const requestModule = require('../../../util/request');
-const request = requestModule.default || requestModule;
-
 describe('request util', () => {
+	const defaultUserAgent =
+		'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+
+	let axios;
+	let request;
 	let mockService;
+	let requestInterceptor;
 
 	beforeEach(() => {
-		jest.clearAllMocks();
-		// Get the service instance that was returned by axios.create
+		jest.resetModules();
+		axios = require('axios');
 		mockService = axios.create();
-		mockService.mockResolvedValue({ data: {}, config: { url: 'test' } });
 		global.userInfo = { cookie: 'test_cookie=123' };
+
+		const requestModule = require('../../../util/request');
+		request = requestModule.default || requestModule;
+		requestInterceptor = mockService.interceptors.request.use.mock.calls[0][0];
 	});
 
 	afterEach(() => {
@@ -34,7 +39,7 @@ describe('request util', () => {
 		expect(mockService).toHaveBeenCalledWith(
 			expect.objectContaining({
 				url: expect.stringContaining('/api/test'),
-				method: 'get',
+				method: 'get'
 			})
 		);
 	});
@@ -53,5 +58,20 @@ describe('request util', () => {
 		expect(call.headers).toBeDefined();
 		expect(call.headers.Cookie).toBe('test_cookie=123');
 		expect(call.headers['Custom-Header']).toBe('value');
+	});
+
+	test('should set default User-Agent header', async () => {
+		await request('/api/test', 'GET', { headers: {} });
+
+		const interceptedConfig = requestInterceptor(mockService.mock.calls[0][0]);
+		expect(interceptedConfig.headers['User-Agent']).toBe(defaultUserAgent);
+	});
+
+	test('should set default Content-Type for POST requests with body', async () => {
+		await request('/api/test', 'POST', { data: { foo: 'bar' }, headers: {} });
+
+		const interceptedConfig = requestInterceptor(mockService.mock.calls[0][0]);
+		expect(interceptedConfig.method).toBe('post');
+		expect(interceptedConfig.headers['Content-Type']).toBe('application/x-www-form-urlencoded; charset=UTF-8');
 	});
 });

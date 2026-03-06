@@ -69,22 +69,6 @@ declare module 'koa' {
 	export { Context, Request, Response, Middleware };
 }
 
-declare module 'chalk' {
-	interface Chalk {
-		(text: string): string;
-		hex(color: string): (text: string) => string;
-		grey: (text: string) => string;
-		cyan: (text: string) => string;
-		white: (text: string) => string;
-		green: (text: string) => string;
-		yellow: (text: string) => string;
-		blue: (text: string) => string;
-		red: (text: string) => string;
-	}
-	const chalk: Chalk;
-	export = chalk;
-}
-
 declare module 'koa-bodyparser' {
 	function bodyParser(options?: any): any;
 	export = bodyParser;

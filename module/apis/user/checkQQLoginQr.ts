@@ -1,10 +1,6 @@
+import type { ApiFunction, ApiOptions, ApiResponse } from '../../../types/api';
+import { customResponse, errorResponse } from '../../../util/apiResponse';
 import { getGtk, getGuid } from '../../../util/loginUtils';
-
-export interface ApiOptions {
-  method?: string;
-  params?: Record<string, any>;
-  option?: any;
-}
 
 interface LoginSession {
   loginUin: string;
@@ -12,17 +8,6 @@ interface LoginSession {
   cookie: string;
   cookieList: string[];
   cookieObject: Record<string, string>;
-}
-
-export interface LoginCheckResponse {
-  status: number;
-  isOk?: boolean;
-  refresh?: boolean;
-  message?: string;
-  body?: {
-    error?: string;
-    session?: LoginSession;
-  };
 }
 
 const REQUEST_TIMEOUT_MS = 10000;
@@ -79,10 +64,10 @@ const buildLoginSession = (cookie: string): LoginSession => {
   };
 };
 
-export default async ({ method = 'get', params = {}, option = {} }: ApiOptions): Promise<LoginCheckResponse> => {
+const checkQQLoginQr: ApiFunction = async ({ method = 'get', params = {}, option = {} }: ApiOptions): Promise<ApiResponse> => {
   const { ptqrtoken, qrsig } = params;
   if (!ptqrtoken || !qrsig) {
-    return { status: 400, body: { error: '参数错误' } };
+    return errorResponse('参数错误', 400);
   }
 
   try {
@@ -104,19 +89,21 @@ export default async ({ method = 'get', params = {}, option = {} }: ApiOptions):
 
     const refresh = data.includes('已失效');
     if (!data.includes('登录成功')) {
-      return {
-        status: 200,
-        isOk: false,
-        refresh,
-        message: (refresh && '二维码已失效') || '未扫描二维码'
-      };
+      return customResponse(
+        {
+          isOk: false,
+          refresh,
+          message: (refresh && '二维码已失效') || '未扫描二维码'
+        },
+        200
+      );
     }
 
     const allCookie = () => Array.from(cookieMap.values());
 
     const urlMatch = data.match(/(?:'((?:https?|ftp):\/\/[^\s/$.?#].[^\s]*)')/g);
     if (!urlMatch || !urlMatch[0]) {
-      return { status: 502, body: { error: 'Failed to extract checkSigUrl from response' } };
+      return errorResponse('Failed to extract checkSigUrl from response', 502);
     }
     const checkSigUrl = urlMatch[0].replace(/'/g, '');
     const checkSigRes = await fetchWithTimeout(checkSigUrl, {
@@ -127,7 +114,7 @@ export default async ({ method = 'get', params = {}, option = {} }: ApiOptions):
     const checkSigCookie = checkSigRes.headers.get('Set-Cookie');
     const pSkeyMatch = checkSigCookie?.match(/p_skey=([^;]+)/);
     if (!pSkeyMatch || !pSkeyMatch[1]) {
-      return { status: 502, body: { error: 'Failed to extract p_skey from response' } };
+      return errorResponse('Failed to extract p_skey from response', 502);
     }
     const p_skey = pSkeyMatch[1];
     const gtk = getGtk(p_skey);
@@ -166,7 +153,7 @@ export default async ({ method = 'get', params = {}, option = {} }: ApiOptions):
     const location = authorizeRes.headers.get('Location');
     const codeMatch = location?.match(/[?&]code=([^&]+)/);
     if (!codeMatch || !codeMatch[1]) {
-      return { status: 502, body: { error: 'Failed to extract code from authorize response' } };
+      return errorResponse('Failed to extract code from authorize response', 502);
     }
     const code = codeMatch[1];
 
@@ -202,29 +189,21 @@ export default async ({ method = 'get', params = {}, option = {} }: ApiOptions):
 
     const sessionCookie = allCookie().join('; ');
 
-    return {
-      status: 200,
-      isOk: true,
-      message: '登录成功',
-      body: {
+    return customResponse(
+      {
+        isOk: true,
+        message: '登录成功',
         session: buildLoginSession(sessionCookie)
-      }
-    };
+      },
+      200
+    );
   } catch (error) {
     if ((error as Error).name === 'AbortError') {
-      return {
-        status: 504,
-        body: {
-          error: '登录检查超时'
-        }
-      };
+      return errorResponse('登录检查超时', 504);
     }
 
-    return {
-      status: 502,
-      body: {
-        error: '登录检查失败'
-      }
-    };
+    return errorResponse('登录检查失败', 502);
   }
 };
+
+export default checkQQLoginQr;
