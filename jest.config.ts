@@ -16,7 +16,14 @@ const config: Config = {
     '!**/types/**/*.ts'
   ],
   coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'lcov', 'html', 'json-summary'],
+  coverageReporters: ['text', 'lcov', 'html', 'json-summary', 'json'],
+  coveragePathIgnorePatterns: [
+    '/node_modules/',
+    '/tests/',
+    '/dist/',
+    '\\.d\\.ts$',
+    '/types/'
+  ],
   coverageThreshold: {
     global: {
       branches: 35,

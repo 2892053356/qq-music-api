@@ -1,5 +1,6 @@
 codecov:
   require_ci_to_pass: true
+  branch: main
 
 coverage:
   precision: 2
@@ -19,7 +20,10 @@ coverage:
         threshold: 1%
         # 只在修改的文件上检查
         only_pulls: false
-    
+        # 使用 flags
+        flags:
+          - unit
+      
     patch:
       default:
         # 新代码的覆盖率要求
@@ -28,6 +32,22 @@ coverage:
         threshold: 5%
         # 只检查修改的文件
         only_pulls: true
+        flags:
+          - unit
+  
+  # Flags 配置
+  flags:
+    unit:
+      carryforward: false
+      paths:
+        - tests/unit/
+      statuses:
+        - type: project
+          target: 50%
+          threshold: 1%
+        - type: patch
+          target: 80%
+          threshold: 5%
 
 # 忽略某些文件和目录
 ignore:
