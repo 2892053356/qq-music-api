@@ -16,7 +16,7 @@ export default async ({ method = 'get', params = {}, option = {} }: ApiOptions) 
 	return handleApi(
 		y_common({
 			url: '/base/fcgi-bin/fcg_global_comment_h5.fcg',
-			method: method as string,
+			method: method,
 			options
 		})
 	);

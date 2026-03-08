@@ -17,7 +17,7 @@ export default async ({ method = 'get', params = {}, option = {} }: ApiOptions) 
 	return handleApi(
 		y_common({
 			url: '/splcloud/fcgi-bin/gethotkey.fcg',
-			method: method as string,
+			method: method,
 			options
 		})
 	);

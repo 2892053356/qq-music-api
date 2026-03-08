@@ -85,4 +85,17 @@ router.get('/user/getQQLoginQr', context.getQQLoginQr);
 router.post('/checkQQLoginQr', context.checkQQLoginQr);
 router.post('/user/checkQQLoginQr', context.checkQQLoginQr);
 
+// 推荐相关
+router.get('/getDailyRecommend', context.getDailyRecommend);
+router.get('/getPrivateFM', context.getPrivateFM);
+router.get('/getNewSongs', context.getNewSongs);
+router.get('/getPersonalRecommend', context.getPersonalRecommend);
+router.get('/getSimilarSongs', context.getSimilarSongs);
+
+// 扩展功能
+router.get('/getPlaylistTags', context.getPlaylistTags);
+router.get('/getPlaylistsByTag', context.getPlaylistsByTag);
+router.get('/getHotComments', context.getHotComments);
+router.get('/getSingerListByArea', context.getSingerListByArea);
+
 export default router;

@@ -20,7 +20,7 @@ export default async ({ method = 'get', params = {}, option = {} }: ApiOptions) 
 	return handleApi(
 		y_common({
 			url: '/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg',
-			method: method as string,
+			method: method,
 			options
 		})
 	);

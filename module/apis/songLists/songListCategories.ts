@@ -15,7 +15,7 @@ export default async ({ method = 'get', params = {}, option = {} }: ApiOptions) 
 	return handleApi(
 		y_common({
 			url: '/splcloud/fcgi-bin/fcg_get_diss_tag_conf.fcg',
-			method: method as string,
+			method: method,
 			options
 		})
 	);

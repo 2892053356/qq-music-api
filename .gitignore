@@ -17,6 +17,7 @@ dist/
 # VitePress 缓存和构建产物
 docs/.vitepress/cache/
 docs/.vitepress/dist/
+docs-dist/
 
 # 旧版 Docsify 文档文件（已迁移到 VitePress）
 docs/index.html
