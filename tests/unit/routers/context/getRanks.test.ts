@@ -111,19 +111,25 @@ describe('routers/context/getRanks', () => {
   });
 
   test('should calculate week number correctly', async () => {
-    mockCtx.query = {};
-    (UCommon as jest.Mock).mockResolvedValue({ data: {} });
+    const fixedDate = new Date('2023-01-05T12:00:00Z'); // fixed, deterministic date
+    jest.useFakeTimers().setSystemTime(fixedDate);
 
-    await getRanksController(mockCtx, mockNext);
+    try {
+      mockCtx.query = {};
+      (UCommon as jest.Mock).mockResolvedValue({ data: {} });
 
-    const callArgs = (UCommon as jest.Mock).mock.calls[0][0];
-    const dataParam = JSON.parse(callArgs.params.data);
-    
-    const now = new Date();
-    const expectedWeek = getWeekNumber(now);
-    const expectedPeriod = `${now.getFullYear()}_${expectedWeek}`;
-    
-    expect(dataParam.req_1.param.period).toBe(expectedPeriod);
+      await getRanksController(mockCtx, mockNext);
+
+      const callArgs = (UCommon as jest.Mock).mock.calls[0][0];
+      const dataParam = JSON.parse(callArgs.params.data);
+
+      const expectedWeek = getWeekNumber(fixedDate);
+      const expectedPeriod = `${fixedDate.getFullYear()}_${expectedWeek}`;
+
+      expect(dataParam.req_1.param.period).toBe(expectedPeriod);
+    } finally {
+      jest.useRealTimers();
+    }
   });
 
   test('should set response on successful API call', async () => {

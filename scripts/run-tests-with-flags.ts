@@ -1,10 +1,11 @@
-#!/usr/bin/env ts-node
 /**
  * 运行测试并生成带 flags 的覆盖率报告
  * 
  * 用法:
  * - 运行所有测试：npm run test:flags
  * - 只运行单元测试：npm run test:flags:unit
+ * 
+ * 注意：此脚本通过 tsx 运行，不使用 ts-node
  */
 
 import { execSync } from 'child_process';
