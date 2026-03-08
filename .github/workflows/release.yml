@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Tag to release (e.g., v1.0.0)'
-        required: true
+        description: 'Tag to release (e.g., v1.0.0). Leave empty to use version from package.json'
+        required: false
         type: string
 
 jobs:
@@ -19,7 +19,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.tag }}
+          ref: ${{ inputs.tag || '' }}
+          fetch-tags: true
+
+      - name: Determine version to release
+        id: version
+        run: |
+          if [ -n "${{ inputs.tag }}" ]; then
+            echo "Using provided tag: ${{ inputs.tag }}"
+            echo "version=${{ inputs.tag }}" >> $GITHUB_OUTPUT
+          else
+            VERSION=$(node -p "require('./package.json').version")
+            echo "No tag provided, using package.json version: v$VERSION"
+            echo "version=v$VERSION" >> $GITHUB_OUTPUT
+          fi
 
       - name: Setup Node.js for NPM
         uses: actions/setup-node@v4
