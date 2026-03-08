@@ -8,6 +8,7 @@ describe('middlewares/cors', () => {
   beforeEach(() => {
     ctx = {
       set: jest.fn(),
+      vary: jest.fn(), // Add vary method
       request: {
         header: {}
       },
