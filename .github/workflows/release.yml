@@ -1,4 +1,4 @@
-name: Release
+name: Release Package
 
 on:
   workflow_dispatch:
@@ -12,7 +12,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # 需要写入权限来创建 Release
+      contents: write # 需要写入权限来创建 Package
       packages: write
       id-token: write # 用于 npm provenance
 
@@ -61,11 +61,11 @@ jobs:
       - name: Generate CHANGELOG
         run: npm run changelog
 
-      - name: Create GitHub Release
+      - name: Create GitHub Package
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.version.outputs.version }}
-          name: Release ${{ steps.version.outputs.version }}
+          name: Package ${{ steps.version.outputs.version }}
           body_path: CHANGELOG.md
           draft: false
           prerelease: false
