@@ -1,4 +1,4 @@
-import getSingerHotSongController from '../../../../routers/context/getSingerHotSong';
+import getSingerHotSongController from '../../../../routers/context/getSingerHotsong';
 import { UCommon } from '../../../../module';
 
 jest.mock('../../../../module');
