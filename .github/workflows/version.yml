@@ -25,25 +25,7 @@ jobs:
 
       - name: Bump version in package.json
         id: bump_version
-        run: |
-          # 确保 package.json 是可写的
-          chmod +w package.json
-
-          # 执行版本升级（只更新 package.json，不生成 CHANGELOG）
-          NEW_VERSION=$(npm version patch --no-git-tag-version --no-commit-hooks 2>&1)
-          EXIT_CODE=$?
-
-          # 检查是否成功
-          if [ $EXIT_CODE -ne 0 ]; then
-            echo "Error: npm version failed with exit code $EXIT_CODE"
-            echo "Output: $NEW_VERSION"
-            exit 1
-          fi
-
-          # Remove leading 'v' from NEW_VERSION to avoid double 'v' in commit message
-          NEW_VERSION_CLEAN=${NEW_VERSION#v}
-          echo "new_version=$NEW_VERSION_CLEAN" >> $GITHUB_OUTPUT
-          echo "New version: $NEW_VERSION_CLEAN"
+        run: node scripts/bump-version.js
 
       - name: Commit and push version change
         run: |
