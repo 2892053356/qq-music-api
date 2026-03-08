@@ -178,17 +178,17 @@ npm run prettier
 
 **重要**：本项目采用 **文档与包分离发布** 策略。
 
-| 内容                  | 触发条件          | 发布方式       | 说明                           |
-| --------------------- | ----------------- | -------------- | ------------------------------ |
-| **GitHub Pages 文档** | 推送 main 分支    | 自动部署       | 永远与 main 同步，可能领先 npm |
-| **npm 包**            | 手动触发 workflow | GitHub Actions | 正式版本，需要推送 v\* 标签    |
-| **GitHub Release**    | 手动触发 workflow | GitHub Actions | 与 npm 版本同步                |
+| 内容                  | 触发条件          | 发布方式       | 说明                                 |
+| --------------------- | ----------------- | -------------- | ------------------------------------ |
+| **GitHub Pages 文档** | 推送 main 分支    | 自动部署       | 永远与 main 同步，可能领先 npm       |
+| **npm 包**            | 手动触发 workflow | GitHub Actions | 正式版本，自动使用 package.json 版本 |
+| **GitHub Release**    | 手动触发 workflow | GitHub Actions | 与 npm 版本同步                      |
 
 **核心规则：**
 
 ```
 文档部署：push main → 自动部署（无需手动操作）
-包发布：  推送 v* 标签 → 手动触发 workflow → 自动发布
+包发布：  手动触发 workflow → 自动使用 package.json 版本发布
 ```
 
 ### 发版方式说明
@@ -210,18 +210,18 @@ npm run prettier
 - 📦 **GitHub Release** - 与 npm 版本同步
 - 📦 **CHANGELOG** - 基于 Git 提交历史生成
 - 📦 **package.json 版本** - 自动维护（每次 push 到 main 自动 bump patch 版本）
-- ⚠️ **包发布需要手动触发** - 在 GitHub Actions 手动触发 release workflow 并指定标签
+- ⚠️ **包发布需要手动触发** - 在 GitHub Actions 手动触发 release workflow（可选输入标签）
 
 **总结：**
 
 ```
 GitHub Pages 文档   = main 分支最新状态（可能领先 npm）
 package.json 版本   = 自动 bump（每次 push 到 main）
-npm 包版本         = 手动触发 release workflow 时指定的 v* 标签
+npm 包版本         = package.json 的版本（或手动指定的标签版本）
 
 文档部署：自动（push main 触发）
 版本管理：自动（push main 时自动 bump patch 版本）
-包发布：    手动触发（需要指定 v* 标签）
+包发布：    手动触发（默认使用 package.json 版本，可选指定标签）
 ```
 
 **注意事项：**
@@ -229,8 +229,9 @@ npm 包版本         = 手动触发 release workflow 时指定的 v* 标签
 1. **不要依赖本地发布** - 本地 `npm publish` 仅用于测试，不是标准发布方式
 2. **文档总是最新** - GitHub Pages 可能包含未发布的功能文档
 3. **package.json 版本自动维护** - 每次 push 到 main 会自动 bump patch 版本（用于开发版本追踪）
-4. **正式发布的版本号由标签决定** - npm 包和 GitHub Release 的版本号由手动触发时指定的标签决定
-5. **手动触发原因** - 发布前可以在 GitHub Actions 页面确认所有测试通过
+4. **正式发布默认使用 package.json 版本** - npm 包和 GitHub Release 默认使用 package.json 的版本号
+5. **可选指定标签** - 可以在触发 workflow 时输入特定标签名发布历史版本
+6. **手动触发原因** - 发布前可以在 GitHub Actions 页面确认所有测试通过
 
 ### 标准发版步骤
 
