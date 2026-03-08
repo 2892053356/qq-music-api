@@ -25,7 +25,7 @@
     "dev": "tsx app.ts",
     "build": "tsc",
     "start": "node dist/app.js",
-    "vercel-build": "npm run build && npm run docs:build && cp -r public dist/ 2>/dev/null || true",
+    "vercel-build": "npm run build && npm run docs:build && (cp -r public dist/ 2>/dev/null || true)",
     "docs:build": "node scripts/generate-version.js && vitepress build docs",
     "test": "jest",
     "test:watch": "jest --watch",

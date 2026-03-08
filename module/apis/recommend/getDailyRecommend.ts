@@ -3,13 +3,6 @@ import uCommon from '../u_common'
 import { handleApi } from '../../../util/apiResponse'
 
 const DEFAULT_NEW_SONG_TYPE = 5
-const NEW_SONG_LIMIT_BY_TYPE: Record<number, number> = {
-  1: 20,
-  2: 20,
-  3: 20,
-  4: 20,
-  5: 20
-}
 
 function normalizeNewSongType(areaId: number) {
   return Number.isInteger(areaId) && areaId >= 1 && areaId <= 5
@@ -41,15 +34,15 @@ export async function getDailyRecommend(cookie?: string) {
     }
   }
 
+  const headers: any = { 'Content-Type': 'application/json' }
+  if (cookie) headers.cookie = cookie
+
   return handleApi(
     uCommon({
       method: 'POST',
       options: {
         data: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json',
-          cookie
-        }
+        headers
       }
     })
   )
@@ -79,15 +72,15 @@ export async function getPrivateFM(cookie?: string) {
     }
   }
 
+  const headers: any = { 'Content-Type': 'application/json' }
+  if (cookie) headers.cookie = cookie
+
   return handleApi(
     uCommon({
       method: 'POST',
       options: {
         data: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json',
-          cookie
-        }
+        headers
       }
     })
   )
@@ -114,7 +107,7 @@ export async function getNewSongs(areaId: number = DEFAULT_NEW_SONG_TYPE, limit:
       method: 'get_new_song_info',
       param: {
         type: normalizedType,
-        num: normalizedLimit || NEW_SONG_LIMIT_BY_TYPE[normalizedType]
+        num: normalizedLimit
       }
     }
   }
