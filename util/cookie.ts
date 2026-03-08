@@ -1,12 +1,9 @@
 import { Context, Next } from 'koa';
+import type { UserInfo } from '../types/global';
 
-// Define the shape of global.userInfo
+// Extend global namespace with UserInfo
 declare global {
-  var userInfo: {
-    cookie?: string;
-    cookieList?: string[];
-    loginUin?: string;
-  };
+  var userInfo: UserInfo;
 }
 
 const SAFE_COOKIE_NAMES = new Set(['qqmusic_key', 'qqmusic_uin']);
