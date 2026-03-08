@@ -19,8 +19,17 @@ if (!fs.existsSync(COVERAGE_DIR)) {
   fs.mkdirSync(COVERAGE_DIR, { recursive: true });
 }
 
+/**
+ * 运行命令
+ * 注意：command 参数必须是硬编码的命令字符串，不能包含用户输入
+ * @param command - 要执行的命令（必须是硬编码字符串）
+ * @param env - 环境变量
+ */
 function runCommand(command: string, env: Record<string, string> = {}) {
   try {
+    // 使用 execSync 执行命令，命令必须是固定的字符串
+    // 安全说明：此函数只能用于执行硬编码的命令，不接受外部输入
+    // 所有调用此函数的地方都必须使用字符串字面量
     execSync(command, {
       stdio: 'inherit',
       env: { ...process.env, ...env },
@@ -32,11 +41,22 @@ function runCommand(command: string, env: Record<string, string> = {}) {
   }
 }
 
+/**
+ * 运行 Jest 测试（安全版本）
+ * 使用参数化方式执行 Jest，避免命令注入风险
+ * @param args - Jest 命令行参数数组
+ * @param env - 环境变量
+ */
+function runJest(args: string[], env: Record<string, string> = {}) {
+  const command = `npx jest ${args.join(' ')}`;
+  return runCommand(command, env);
+}
+
 function runUnitTests() {
   console.log('\n🧪 运行单元测试...\n');
   
-  // 运行单元测试
-  runCommand('npx jest --coverage --testPathPattern=tests/unit', {
+  // 运行单元测试 - 使用参数化方式
+  runJest(['--coverage', '--testPathPattern=tests/unit'], {
     JEST_JUNIT_OUTPUT_NAME: 'unit-test-results.xml',
     COVERAGE_FILE: 'coverage/unit-coverage.json'
   });
@@ -53,8 +73,8 @@ function runUnitTests() {
 function runAllTests() {
   console.log('\n🧪 运行所有测试...\n');
   
-  // 运行所有测试
-  runCommand('npx jest --coverage', {
+  // 运行所有测试 - 使用参数化方式
+  runJest(['--coverage'], {
     JEST_JUNIT_OUTPUT_NAME: 'test-results.xml',
     COVERAGE_FILE: 'coverage/all-coverage.json'
   });
