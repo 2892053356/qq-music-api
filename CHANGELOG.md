@@ -1,4 +1,4 @@
-## [2.2.4](https://github.com/sansenjian/qq-music-api/compare/2.0.0...2.2.4) (2026-03-08)
+## [2.2.5](https://github.com/sansenjian/qq-music-api/compare/2.0.0...2.2.5) (2026-03-08)
 
 
 ### Bug Fixes
@@ -33,6 +33,7 @@
 * getSingerHotsong pagination ([#22](https://github.com/sansenjian/qq-music-api/issues/22)) ([6d6dbf3](https://github.com/sansenjian/qq-music-api/commit/6d6dbf36c545269ad7a6138e711e436a90d61e28))
 * google analysis not data ([53e0a8c](https://github.com/sansenjian/qq-music-api/commit/53e0a8c17e84aeba568608be89fd3fc8ddc75e88))
 * handle array-type cookie parameter in recommend controllers ([efb0283](https://github.com/sansenjian/qq-music-api/commit/efb0283474e655dd5b970aea23c0157769371586))
+* improve version.yml workflow ([c4964f0](https://github.com/sansenjian/qq-music-api/commit/c4964f0ceed2373b213cd91922fba67e9eca0607))
 * issue 14 about getRank topId was invalid ([024096f](https://github.com/sansenjian/qq-music-api/commit/024096fa63144391680f1d6ec376929fee697c37))
 * issue 14 about getRank which bug about period change by qq music api ([f13d2b5](https://github.com/sansenjian/qq-music-api/commit/f13d2b540d860994600cc2728e4d848df574b2f4))
 * issue: 12 -> (getHotkey -> getHotKey); axios option error; ([ee0371b](https://github.com/sansenjian/qq-music-api/commit/ee0371b32352546feb8b60b7725dc3ff66a412ef))
@@ -62,6 +63,7 @@
 * 添加获取用户喜欢的歌曲接口 (getUserLikedSongs) ([e9c8217](https://github.com/sansenjian/qq-music-api/commit/e9c82172ce6e669d0bf663704be70664cb47c2b6))
 * 依赖现代化升级 v1.1.7 ([45dc7b3](https://github.com/sansenjian/qq-music-api/commit/45dc7b31169585396125e226c634a17cb0e829cc))
 * add bump-version script to avoid triggering version lifecycle ([e44fa12](https://github.com/sansenjian/qq-music-api/commit/e44fa128c8321afb14d2233b001db1f12172eeed))
+* add CHANGELOG and version.json generation to bump-version script ([6dc35ec](https://github.com/sansenjian/qq-music-api/commit/6dc35ec0fc17552d38d3c9736861150bf8042e4e))
 * add GitHub Packages publishing back ([7d30b2c](https://github.com/sansenjian/qq-music-api/commit/7d30b2c607b71895a40e209fa86f882fb0ee7949))
 * add song list ([c0e8de8](https://github.com/sansenjian/qq-music-api/commit/c0e8de86dd93a907aa75e838c18d967b1434493d))
 * add test infrastructure and fix router compatibility ([863daba](https://github.com/sansenjian/qq-music-api/commit/863daba59a7382bc57528b0da04d0511bbb91bc5))
