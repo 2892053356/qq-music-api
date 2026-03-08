@@ -206,27 +206,31 @@ npm run prettier
 
 **版本发布策略：**
 
-- 📦 **npm 包** - 只在推送标签时发布（正式版本）
+- 📦 **npm 包** - 手动触发 workflow 发布（正式版本）
 - 📦 **GitHub Release** - 与 npm 版本同步
-- 📦 **CHANGELOG** - 基于 Git 标签生成，记录正式发布历史
-- ⚠️ **包发布需要手动触发** - 推送标签后，需要在 GitHub Actions 手动触发 release workflow
+- 📦 **CHANGELOG** - 基于 Git 提交历史生成
+- 📦 **package.json 版本** - 自动维护（每次 push 到 main 自动 bump patch 版本）
+- ⚠️ **包发布需要手动触发** - 在 GitHub Actions 手动触发 release workflow 并指定标签
 
 **总结：**
 
 ```
-GitHub Pages 文档 = main 分支最新状态（可能领先 npm）
-npm 包版本        = 最近一次推送的 v* 标签
+GitHub Pages 文档   = main 分支最新状态（可能领先 npm）
+package.json 版本   = 自动 bump（每次 push 到 main）
+npm 包版本         = 手动触发 release workflow 时指定的 v* 标签
 
 文档部署：自动（push main 触发）
-包发布：    半自动（推送标签 + 手动触发 workflow）
+版本管理：自动（push main 时自动 bump patch 版本）
+包发布：    手动触发（需要指定 v* 标签）
 ```
 
 **注意事项：**
 
 1. **不要依赖本地发布** - 本地 `npm publish` 仅用于测试，不是标准发布方式
 2. **文档总是最新** - GitHub Pages 可能包含未发布的功能文档
-3. **版本号对应** - npm 包版本与 Git 标签严格对应
-4. **手动触发原因** - 发布前可以在 GitHub Actions 页面确认所有测试通过
+3. **package.json 版本自动维护** - 每次 push 到 main 会自动 bump patch 版本（用于开发版本追踪）
+4. **正式发布的版本号由标签决定** - npm 包和 GitHub Release 的版本号由手动触发时指定的标签决定
+5. **手动触发原因** - 发布前可以在 GitHub Actions 页面确认所有测试通过
 
 ### 标准发版步骤
 
@@ -243,53 +247,37 @@ npm 包版本        = 最近一次推送的 v* 标签
    npm run docs:build
    ```
 
-3. **更新版本号并打标签**
+3. **创建发布标签**
 
    ```bash
-   # 补丁版本（Bug 修复）
-   npm version patch
+   # 创建标签（不自动提交，因为 package.json 版本已由 CI 自动维护）
+   git tag v1.0.0
 
-   # 小版本（新功能，向后兼容）
-   npm version minor
-
-   # 主版本（破坏性变更）
-   npm version major
+   # 推送标签
+   git push origin v1.0.0
    ```
 
-   这会：
-   - ✅ 更新 `package.json` 版本号
-   - ✅ 自动执行 `version` 脚本生成 `CHANGELOG.md`
-   - ✅ 自动提交并创建 Git tag（格式：`v1.0.0`）
+   **注意**：`package.json` 的版本号已由 `version.yml` 工作流自动维护（每次 push 到 main 时自动 bump patch 版本），不需要手动执行 `npm version`。
 
-4. **推送标签**
-
-   ```bash
-   git push origin main --follow-tags
-   ```
-
-   推送后：
-   - ✅ **文档自动部署** - deploy-docs.yml 会自动部署最新文档
-   - ⚠️ **包发布待触发** - 需要手动触发 release workflow
-
-5. **手动触发发布 workflow**
+4. **手动触发发布 workflow**
 
    - 访问：https://github.com/sansenjian/qq-music-api/actions/workflows/release.yml
    - 点击 "Run workflow"
-   - 选择刚才推送的 v* 标签
+   - 在 "Tag to release" 输入框中输入刚才推送的标签（如 `v1.0.0`）
    - 点击 "Run workflow" 按钮
 
    GitHub Actions 会自动：
-   - ✅ 检出代码
+   - ✅ 检出指定标签的代码
    - ✅ 安装依赖
    - ✅ 运行测试（npm test）
    - ✅ 运行代码检查（npm run eslint）
    - ✅ 构建 TypeScript 和文档
    - ✅ 生成 CHANGELOG
    - ✅ 创建 GitHub Release
-   - ✅ 发布到 npm
+   - ✅ 发布到 npm（版本号为标签版本）
    - ✅ 发布到 GitHub Packages
 
-6. **验证发布结果**
+5. **验证发布结果**
    - 检查 GitHub Actions 状态：https://github.com/sansenjian/qq-music-api/actions
    - 查看 GitHub Release：https://github.com/sansenjian/qq-music-api/releases
    - 查看 npm 包：https://www.npmjs.com/package/@sansenjian/qq-music-api
