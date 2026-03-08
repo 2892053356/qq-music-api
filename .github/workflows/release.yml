@@ -1,4 +1,4 @@
-name: Release Package
+name: Publish Package
 
 on:
   workflow_dispatch:
@@ -9,10 +9,10 @@ on:
         type: string
 
 jobs:
-  release:
+  publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # 需要写入权限来创建 Package
+      contents: read
       packages: write
       id-token: write # 用于 npm provenance
 
@@ -22,7 +22,7 @@ jobs:
           ref: ${{ inputs.tag || '' }}
           fetch-tags: true
 
-      - name: Determine version to release
+      - name: Determine version to publish
         id: version
         run: |
           if [ -n "${{ inputs.tag }}" ]; then
@@ -61,29 +61,7 @@ jobs:
       - name: Generate CHANGELOG
         run: npm run changelog
 
-      - name: Create GitHub Package
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ steps.version.outputs.version }}
-          name: Package ${{ steps.version.outputs.version }}
-          body_path: CHANGELOG.md
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Publish to NPM
         run: npm publish --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Setup Node.js for GitHub Packages
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          registry-url: 'https://npm.pkg.github.com'
-
-      - name: Publish to GitHub Packages
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ github.token }}
