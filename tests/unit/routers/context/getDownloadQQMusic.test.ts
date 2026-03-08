@@ -1,5 +1,5 @@
 import getDownloadQQMusicController from '../../../../routers/context/getDownloadQQMusic';
-import { getDownloadQQMusic } from '../../../../module';
+import { downloadQQMusic } from '../../../../module';
 
 jest.mock('../../../../module');
 
@@ -17,12 +17,12 @@ describe('routers/context/getDownloadQQMusic', () => {
     jest.clearAllMocks();
   });
 
-  test('should call getDownloadQQMusic with default props', async () => {
-    (getDownloadQQMusic as jest.Mock).mockResolvedValue({ status: 200, body: { code: 0, data: {} } });
+  test('should call downloadQQMusic with default props', async () => {
+    (downloadQQMusic as jest.Mock).mockResolvedValue({ status: 200, body: { code: 0, data: {} } });
 
     await getDownloadQQMusicController(mockCtx, mockNext);
 
-    expect(getDownloadQQMusic).toHaveBeenCalledWith({
+    expect(downloadQQMusic).toHaveBeenCalledWith({
       method: 'get',
       params: {},
       option: {}
@@ -34,7 +34,7 @@ describe('routers/context/getDownloadQQMusic', () => {
       status: 200,
       body: { code: 0, data: { downloadUrl: 'http://example.com' } }
     };
-    (getDownloadQQMusic as jest.Mock).mockResolvedValue(mockResponse);
+    (downloadQQMusic as jest.Mock).mockResolvedValue(mockResponse);
 
     await getDownloadQQMusicController(mockCtx, mockNext);
 
@@ -42,9 +42,9 @@ describe('routers/context/getDownloadQQMusic', () => {
     expect(mockCtx.body).toEqual({ code: 0, data: { downloadUrl: 'http://example.com' } });
   });
 
-  test('should handle errors from getDownloadQQMusic', async () => {
+  test('should handle errors from downloadQQMusic', async () => {
     const mockError = new Error('Download error');
-    (getDownloadQQMusic as jest.Mock).mockRejectedValue(mockError);
+    (downloadQQMusic as jest.Mock).mockRejectedValue(mockError);
 
     await expect(getDownloadQQMusicController(mockCtx, mockNext)).rejects.toThrow('Download error');
   });

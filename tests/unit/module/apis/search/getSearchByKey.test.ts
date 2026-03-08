@@ -1,9 +1,9 @@
-import getSearchByKey from '../../../../module/apis/search/getSearchByKey';
-import c_y_common from '../../../../module/apis/u_common';
-import { handleApi } from '../../../../util/apiResponse';
+import getSearchByKey from '../../../../../module/apis/search/getSearchByKey';
+import y_common from '../../../../../module/apis/y_common';
+import { handleApi } from '../../../../../util/apiResponse';
 
-jest.mock('../../../../module/apis/u_common');
-jest.mock('../../../../util/apiResponse');
+jest.mock('../../../../../module/apis/y_common');
+jest.mock('../../../../../util/apiResponse');
 
 describe('module/apis/search/getSearchByKey', () => {
   beforeEach(() => {
@@ -15,12 +15,12 @@ describe('module/apis/search/getSearchByKey', () => {
     expect(typeof getSearchByKey).toBe('function');
   });
 
-  test('should call c_y_common with correct URL', async () => {
-    (c_y_common as jest.Mock).mockResolvedValue({ data: { code: 0, data: {} } });
+  test('should call y_common with correct URL', async () => {
+    (y_common as jest.Mock).mockResolvedValue({ data: { code: 0, data: {} } });
 
     await getSearchByKey({ method: 'get', params: {}, option: {} });
 
-    expect(c_y_common).toHaveBeenCalledWith(
+    expect(y_common).toHaveBeenCalledWith(
       expect.objectContaining({
         url: '/soso/fcgi-bin/client_search_cp'
       })
@@ -28,19 +28,19 @@ describe('module/apis/search/getSearchByKey', () => {
   });
 
   test('should use default method get when not provided', async () => {
-    (c_y_common as jest.Mock).mockResolvedValue({ data: { code: 0, data: {} } });
+    (y_common as jest.Mock).mockResolvedValue({ data: { code: 0, data: {} } });
 
     await getSearchByKey({ params: {}, option: {} });
 
-    expect(c_y_common).toHaveBeenCalledWith(
+    expect(y_common).toHaveBeenCalledWith(
       expect.objectContaining({
         method: 'get'
       })
     );
   });
 
-  test('should pass key param to c_y_common', async () => {
-    (c_y_common as jest.Mock).mockResolvedValue({ data: { code: 0, data: {} } });
+  test('should pass key param to y_common', async () => {
+    (y_common as jest.Mock).mockResolvedValue({ data: { code: 0, data: {} } });
 
     await getSearchByKey({
       method: 'get',
@@ -48,11 +48,11 @@ describe('module/apis/search/getSearchByKey', () => {
       option: {}
     });
 
-    expect(c_y_common).toHaveBeenCalledWith(
+    expect(y_common).toHaveBeenCalledWith(
       expect.objectContaining({
         options: expect.objectContaining({
           params: expect.objectContaining({
-            w: 'test music'
+            key: 'test music'
           })
         })
       })
@@ -60,7 +60,7 @@ describe('module/apis/search/getSearchByKey', () => {
   });
 
   test('should add default params', async () => {
-    (c_y_common as jest.Mock).mockResolvedValue({ data: { code: 0, data: {} } });
+    (y_common as jest.Mock).mockResolvedValue({ data: { code: 0, data: {} } });
 
     await getSearchByKey({
       method: 'get',
@@ -68,18 +68,25 @@ describe('module/apis/search/getSearchByKey', () => {
       option: {}
     });
 
-    const callArgs = (c_y_common as jest.Mock).mock.calls[0][0];
+    const callArgs = (y_common as jest.Mock).mock.calls[0][0];
     expect(callArgs.options.params).toMatchObject({
-      w: 'test',
+      key: 'test',
       format: 'json',
       outCharset: 'utf-8',
-      n: 20,
-      p: 1
+      ct: 24,
+      qqmusic_ver: 1298,
+      remoteplace: 'txt.yqq.song',
+      t: 0,
+      aggr: 1,
+      cr: 1,
+      lossless: 0,
+      flag_qc: 0,
+      platform: 'yqq.json'
     });
   });
 
   test('should allow overriding n and p params', async () => {
-    (c_y_common as jest.Mock).mockResolvedValue({ data: { code: 0, data: {} } });
+    (y_common as jest.Mock).mockResolvedValue({ data: { code: 0, data: {} } });
 
     await getSearchByKey({
       method: 'get',
@@ -87,16 +94,16 @@ describe('module/apis/search/getSearchByKey', () => {
       option: {}
     });
 
-    const callArgs = (c_y_common as jest.Mock).mock.calls[0][0];
+    const callArgs = (y_common as jest.Mock).mock.calls[0][0];
     expect(callArgs.options.params).toMatchObject({
-      w: 'test',
+      key: 'test',
       n: 50,
       p: 3
     });
   });
 
   test('should merge custom options', async () => {
-    (c_y_common as jest.Mock).mockResolvedValue({ data: { code: 0, data: {} } });
+    (y_common as jest.Mock).mockResolvedValue({ data: { code: 0, data: {} } });
     const customOption = { timeout: 10000 };
 
     await getSearchByKey({
@@ -105,16 +112,16 @@ describe('module/apis/search/getSearchByKey', () => {
       option: customOption
     });
 
-    const callArgs = (c_y_common as jest.Mock).mock.calls[0][0];
+    const callArgs = (y_common as jest.Mock).mock.calls[0][0];
     expect(callArgs.options).toMatchObject({
       timeout: 10000,
       params: expect.any(Object)
     });
   });
 
-  test('should call handleApi with c_y_common promise', async () => {
+  test('should call handleApi with y_common promise', async () => {
     const mockResponse = { data: { code: 0, data: { song: {} } } };
-    (c_y_common as jest.Mock).mockResolvedValue(mockResponse);
+    (y_common as jest.Mock).mockResolvedValue(mockResponse);
     (handleApi as jest.Mock).mockResolvedValue({ status: 200, body: mockResponse });
 
     const result = await getSearchByKey({ method: 'get', params: { key: 'test' }, option: {} });
@@ -124,11 +131,11 @@ describe('module/apis/search/getSearchByKey', () => {
   });
 
   test('should handle empty key', async () => {
-    (c_y_common as jest.Mock).mockResolvedValue({ data: { code: 0, data: {} } });
+    (y_common as jest.Mock).mockResolvedValue({ data: { code: 0, data: {} } });
 
     await getSearchByKey({ method: 'get', params: { key: '' }, option: {} });
 
-    const callArgs = (c_y_common as jest.Mock).mock.calls[0][0];
-    expect(callArgs.options.params.w).toBe('');
+    const callArgs = (y_common as jest.Mock).mock.calls[0][0];
+    expect(callArgs.options.params.key).toBe('');
   });
 });

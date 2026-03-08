@@ -1,9 +1,9 @@
-import getAlbumInfo from '../../../../module/apis/album/getAlbumInfo';
-import y_common from '../../../../module/apis/y_common';
-import { handleApi } from '../../../../util/apiResponse';
+import getAlbumInfo from '../../../../../module/apis/album/getAlbumInfo';
+import y_common from '../../../../../module/apis/y_common';
+import { handleApi } from '../../../../../util/apiResponse';
 
-jest.mock('../../../../module/apis/y_common');
-jest.mock('../../../../util/apiResponse');
+jest.mock('../../../../../module/apis/y_common');
+jest.mock('../../../../../util/apiResponse');
 
 describe('module/apis/album/getAlbumInfo', () => {
   beforeEach(() => {
