@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import corsMiddleware from '../../../middlewares/corsMiddleware';
+import corsMiddleware from '../../../middlewares/koa-cors';
 
 describe('middlewares/cors', () => {
   let ctx: Context;

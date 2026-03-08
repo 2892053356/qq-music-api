@@ -17,12 +17,6 @@ const config: Config = {
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html', 'json-summary'],
-  coverageReportersDefaultOptions: {
-    text: {
-      skipFull: false,
-      maxColumns: 120
-    }
-  },
   coverageThreshold: {
     global: {
       branches: 35,
