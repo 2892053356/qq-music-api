@@ -1,7 +1,7 @@
-import { KoaContext, Controller } from '../types';
+import { Controller } from '../types';
 import { UCommon } from '../../module';
 
-const controller: Controller = async (ctx, next) => {
+const controller: Controller = async (ctx) => {
 	const { songs } = ctx.request.body || {};
 
   const params = Object.assign({
