@@ -32,7 +32,7 @@ const config: Config = {
     '^@util/(.*)$': '<rootDir>/util/$1'
   },
   transform: {
-    '^.+\.ts$': ['ts-jest', {
+    '^.+[.]ts$': ['ts-jest', {
       tsconfig: 'tsconfig.test.json'
     }]
   }

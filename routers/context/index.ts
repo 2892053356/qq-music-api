@@ -1,5 +1,6 @@
 import { KoaContext, Controller } from '../types';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const req = (id: string): any => {
   const mod = require(id);
   return mod && mod.default ? mod.default : mod;

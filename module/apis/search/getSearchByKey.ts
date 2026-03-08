@@ -24,7 +24,7 @@ export default async ({ method = 'get', params = {}, option = {} }: ApiOptions) 
 	return handleApi(
 		y_common({
 			url: '/soso/fcgi-bin/client_search_cp',
-			method: method as string,
+			method: method,
 			options
 		})
 	);

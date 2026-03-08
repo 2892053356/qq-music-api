@@ -15,7 +15,7 @@ export default async ({ method = 'get', params = {}, option = {} }: ApiOptions) 
 	return handleApi(
 		y_common({
 			url: '/v8/fcg-bin/fcg_v8_album_info_cp.fcg',
-			method: method as string,
+			method: method,
 			options
 		})
 	);

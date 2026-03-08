@@ -14,7 +14,7 @@ const controller: Controller = async (ctx, next) => {
   const num = +ctx.query.limit || 20;
   const offset = +ctx.query.page || 0;
   
-  let date = new Date();
+  const date = new Date();
   const week = getWeekNumber(date);
   const isoWeekYearVal = date.getFullYear();
   const period = `${isoWeekYearVal}_${week}`;

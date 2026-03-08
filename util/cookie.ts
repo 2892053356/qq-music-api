@@ -9,10 +9,10 @@ declare global {
 const SAFE_COOKIE_NAMES = new Set(['qqmusic_key', 'qqmusic_uin']);
 
 const cookieMiddleware = () => async (ctx: Context, next: Next) => {
-	if (global.userInfo?.cookie) {
+  if (global.userInfo?.cookie) {
     // Extend Request interface if needed, or just cast
-		(ctx.request as any).cookie = global.userInfo.cookie;
-	}
+    (ctx.request as any).cookie = global.userInfo.cookie;
+  }
 
 	if (Array.isArray(global.userInfo?.cookieList)) {
 		global.userInfo.cookieList.forEach((cookie: string) => {
