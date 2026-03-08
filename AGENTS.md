@@ -247,37 +247,26 @@ npm 包版本         = 手动触发 release workflow 时指定的 v* 标签
    npm run docs:build
    ```
 
-3. **创建发布标签**
-
-   ```bash
-   # 创建标签（不自动提交，因为 package.json 版本已由 CI 自动维护）
-   git tag v1.0.0
-
-   # 推送标签
-   git push origin v1.0.0
-   ```
-
-   **注意**：`package.json` 的版本号已由 `version.yml` 工作流自动维护（每次 push 到 main 时自动 bump patch 版本），不需要手动执行 `npm version`。
-
-4. **手动触发发布 workflow**
-
+3. **手动触发发布 workflow**
    - 访问：https://github.com/sansenjian/qq-music-api/actions/workflows/release.yml
    - 点击 "Run workflow"
-   - 在 "Tag to release" 输入框中输入刚才推送的标签（如 `v1.0.0`）
+   - **不需要输入任何内容**（留空即可，会自动使用 `package.json` 的版本号）
    - 点击 "Run workflow" 按钮
 
    GitHub Actions 会自动：
-   - ✅ 检出指定标签的代码
+   - ✅ 检出当前 main 分支的代码
    - ✅ 安装依赖
    - ✅ 运行测试（npm test）
    - ✅ 运行代码检查（npm run eslint）
    - ✅ 构建 TypeScript 和文档
    - ✅ 生成 CHANGELOG
-   - ✅ 创建 GitHub Release
-   - ✅ 发布到 npm（版本号为标签版本）
+   - ✅ 创建 GitHub Release（版本号为 `package.json` 的版本）
+   - ✅ 发布到 npm
    - ✅ 发布到 GitHub Packages
 
-5. **验证发布结果**
+   **可选**：如果需要发布特定 Git 标签的版本，可以在 "Tag to release" 输入框中输入标签名（如 `v1.0.0`）。
+
+4. **验证发布结果**
    - 检查 GitHub Actions 状态：https://github.com/sansenjian/qq-music-api/actions
    - 查看 GitHub Release：https://github.com/sansenjian/qq-music-api/releases
    - 查看 npm 包：https://www.npmjs.com/package/@sansenjian/qq-music-api
@@ -313,7 +302,6 @@ npm publish
 - [ ] 文档构建成功 (`npm run docs:build`)
 - [ ] CHANGELOG.md 已生成并审查
 - [ ] package.json 版本号正确
-- [ ] Git 标签已推送（格式：`v1.0.0`）
 - [ ] GitHub Actions 发布成功
 - [ ] npm 包已发布
 - [ ] GitHub Release 已创建
