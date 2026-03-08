@@ -6,8 +6,11 @@ import recommendApi from '../../module/apis/recommend/getDailyRecommend'
  */
 export async function getDailyRecommendController(ctx: Context) {
   const { cookie } = ctx.query
+  
+  // 处理数组类型，取第一个值
+  const normalizedCookie = Array.isArray(cookie) ? cookie[0] : cookie
 
-  const result = await recommendApi.getDailyRecommend(cookie as string)
+  const result = await recommendApi.getDailyRecommend(normalizedCookie)
 
   ctx.status = result.status
   ctx.body = result.body
@@ -18,8 +21,11 @@ export async function getDailyRecommendController(ctx: Context) {
  */
 export async function getPrivateFMController(ctx: Context) {
   const { cookie } = ctx.query
+  
+  // 处理数组类型，取第一个值
+  const normalizedCookie = Array.isArray(cookie) ? cookie[0] : cookie
 
-  const result = await recommendApi.getPrivateFM(cookie as string)
+  const result = await recommendApi.getPrivateFM(normalizedCookie)
 
   ctx.status = result.status
   ctx.body = result.body
