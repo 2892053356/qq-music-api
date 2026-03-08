@@ -5,6 +5,7 @@ export default defineConfig({
   title: 'QQ Music API',
   description: 'QQ 音乐 API 接口文档',
   base: '/qq-music-api/',
+  outDir: '../docs-dist',
   lastUpdated: true,
 
   head: [

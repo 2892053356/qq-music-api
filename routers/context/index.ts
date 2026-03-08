@@ -43,6 +43,18 @@ const { get: getCookie, set: setCookie } = req('./cookies');
 const getUserPlaylists: Controller = req('./getUserPlaylists');
 const getUserAvatar: Controller = req('./getUserAvatar');
 const getUserLikedSongs: Controller = req('./getUserLikedSongs');
+const dailyRecommendController = req('./getDailyRecommend');
+const personalRecommendController = req('./getPersonalRecommend');
+const extendController = req('./getPlaylistTags');
+const getDailyRecommend: Controller = dailyRecommendController.getDailyRecommend;
+const getPrivateFM: Controller = dailyRecommendController.getPrivateFM;
+const getNewSongs: Controller = dailyRecommendController.getNewSongs;
+const getPersonalRecommend: Controller = personalRecommendController.getPersonalRecommend;
+const getSimilarSongs: Controller = personalRecommendController.getSimilarSongs;
+const getPlaylistTags: Controller = extendController.getPlaylistTags;
+const getPlaylistsByTag: Controller = extendController.getPlaylistsByTag;
+const getHotComments: Controller = extendController.getHotComments;
+const getSingerListByArea: Controller = extendController.getSingerListByArea;
 
 export default {
   getCookie,
@@ -83,5 +95,15 @@ export default {
   checkQQLoginQr,
   getUserPlaylists,
   getUserAvatar,
-  getUserLikedSongs
+  getUserLikedSongs,
+  getDailyRecommend,
+  getPrivateFM,
+  getNewSongs,
+  getPersonalRecommend,
+  getSimilarSongs,
+  getPlaylistTags,
+  getPlaylistsByTag,
+  getHotComments,
+  getSingerListByArea
 };
+
