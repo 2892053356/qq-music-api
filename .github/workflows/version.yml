@@ -23,14 +23,26 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install dependencies
+        run: npm install --no-package-lock
+
       - name: Bump version in package.json
         id: bump_version
         run: node scripts/bump-version.js
 
-      - name: Commit and push version change
+      - name: Commit and push all changes
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add package.json
-          git commit -m "chore(version): bump version to v${{ steps.bump_version.outputs.new_version }} [skip ci]" || echo "No changes to commit"
+
+          # 添加所有生成的文件
+          git add package.json CHANGELOG.md docs/public/version.json
+
+          # 检查是否有更改
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git commit -m "chore(version): bump version to v${{ steps.bump_version.outputs.new_version }} [skip ci]"
           git push origin HEAD:main
