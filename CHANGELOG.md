@@ -1,4 +1,4 @@
-## [2.2.2](https://github.com/sansenjian/qq-music-api/compare/2.0.0...2.2.2) (2026-03-08)
+## [2.2.4](https://github.com/sansenjian/qq-music-api/compare/2.0.0...2.2.4) (2026-03-08)
 
 
 ### Bug Fixes
@@ -61,6 +61,7 @@
 * 迁移到 VitePress 文档系统并添加 GitHub Pages 部署 ([afc0062](https://github.com/sansenjian/qq-music-api/commit/afc00621f465835c6a551bd96cd10f32d3fbb271))
 * 添加获取用户喜欢的歌曲接口 (getUserLikedSongs) ([e9c8217](https://github.com/sansenjian/qq-music-api/commit/e9c82172ce6e669d0bf663704be70664cb47c2b6))
 * 依赖现代化升级 v1.1.7 ([45dc7b3](https://github.com/sansenjian/qq-music-api/commit/45dc7b31169585396125e226c634a17cb0e829cc))
+* add bump-version script to avoid triggering version lifecycle ([e44fa12](https://github.com/sansenjian/qq-music-api/commit/e44fa128c8321afb14d2233b001db1f12172eeed))
 * add GitHub Packages publishing back ([7d30b2c](https://github.com/sansenjian/qq-music-api/commit/7d30b2c607b71895a40e209fa86f882fb0ee7949))
 * add song list ([c0e8de8](https://github.com/sansenjian/qq-music-api/commit/c0e8de86dd93a907aa75e838c18d967b1434493d))
 * add test infrastructure and fix router compatibility ([863daba](https://github.com/sansenjian/qq-music-api/commit/863daba59a7382bc57528b0da04d0511bbb91bc5))
