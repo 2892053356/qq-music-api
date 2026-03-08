@@ -7,7 +7,11 @@ import recommendApi from '../../module/apis/recommend/getPersonalRecommend'
 export async function getPersonalRecommendController(ctx: Context) {
   const { type = '1', cookie } = ctx.query
 
-  const result = await recommendApi.getPersonalRecommend(Number(type), cookie as string)
+  // 处理数组类型，取第一个值
+  const rawType = Array.isArray(type) ? type[0] : type
+  const rawCookie = Array.isArray(cookie) ? cookie[0] : cookie
+
+  const result = await recommendApi.getPersonalRecommend(Number(rawType), rawCookie)
 
   ctx.status = result.status
   ctx.body = result.body

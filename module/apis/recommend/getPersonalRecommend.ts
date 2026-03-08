@@ -63,15 +63,15 @@ export async function getPersonalRecommend(type: number = 1, cookie?: string) {
     }
   }
 
+  const headers: any = { 'Content-Type': 'application/json' }
+  if (cookie) headers.cookie = cookie
+
   return handleApi(
     uCommon({
       method: 'POST',
       options: {
         data: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json',
-          cookie
-        }
+        headers
       }
     })
   )
@@ -101,15 +101,15 @@ export async function getSimilarSongs(songmid: string, cookie?: string) {
     }
   }
 
+  const headers: any = { 'Content-Type': 'application/json' }
+  if (cookie) headers.cookie = cookie
+
   return handleApi(
     uCommon({
       method: 'POST',
       options: {
         data: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json',
-          cookie
-        }
+        headers
       }
     })
   )
