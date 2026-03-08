@@ -58,7 +58,8 @@ export async function handleApi<T = any>(
       },
     };
   } catch (error) {
-    if (options?.logError !== false) {
+    // 只在非测试环境下记录错误日志
+    if (options?.logError !== false && process.env.NODE_ENV !== 'test') {
       console.log('API error:', error);
     }
 

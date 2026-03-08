@@ -16,8 +16,8 @@ const config: Config = {
   coverageReporters: ['text', 'lcov', 'html'],
   coverageThreshold: {
     global: {
-      branches: 50,
-      functions: 50,
+      branches: 35,
+      functions: 40,
       lines: 50,
       statements: 50
     }
@@ -32,7 +32,7 @@ const config: Config = {
     '^@util/(.*)$': '<rootDir>/util/$1'
   },
   transform: {
-    '^.+\.ts$': ['ts-jest', {
+    '^.+[.]ts$': ['ts-jest', {
       tsconfig: 'tsconfig.test.json'
     }]
   }

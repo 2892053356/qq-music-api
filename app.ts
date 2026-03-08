@@ -30,8 +30,8 @@ if (!(global.userInfo as any).cookie) {
 app.use(bodyParser());
 app.use(cookieMiddleware() as any);
 app.use(koaStatic(
-  path.join(__dirname,  'public')
-));
+  path.join(__dirname, 'public')
+) as any);
 
 // logger
 app.use(async (ctx, next) => {
