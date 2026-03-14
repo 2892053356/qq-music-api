@@ -1,3 +1,12 @@
+## 2.2.9 (2026-03-14)
+
+
+### Bug Fixes
+
+* rewrite getMusicPlay url logic ([#12](https://github.com/sansenjian/qq-music-api/issues/12)) ([ec9823b](https://github.com/sansenjian/qq-music-api/commit/ec9823be7821f6c83427f1aada8848729936e1d2))
+
+
+
 ## 2.2.8 (2026-03-08)
 
 
