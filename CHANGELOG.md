@@ -1,3 +1,12 @@
+## 2.2.10 (2026-03-14)
+
+
+### Bug Fixes
+
+* stabilize lyric flow and refresh CI/Vercel config ([#13](https://github.com/sansenjian/qq-music-api/issues/13)) ([34ed7b1](https://github.com/sansenjian/qq-music-api/commit/34ed7b164fa74e12d753867b5a7b49d3b5bf0200))
+
+
+
 ## 2.2.9 (2026-03-14)
 
 
