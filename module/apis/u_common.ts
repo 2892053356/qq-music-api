@@ -5,9 +5,10 @@ import * as config from '../config';
 interface UCommonOptions {
 	options?: AxiosRequestConfig;
 	method?: Method | string;
+	customCookie?: string;
 }
 
-export default ({ options = {}, method = 'get' }: UCommonOptions) => {
+export default ({ options = {}, method = 'get', customCookie }: UCommonOptions) => {
 	const opts: AxiosRequestConfig = { ...options };
 
 	// Merge commonParams into params for query string
@@ -25,5 +26,11 @@ export default ({ options = {}, method = 'get' }: UCommonOptions) => {
 		console.log('https://u.y.qq.com/cgi-bin/musicu.fcg', { opts: logOpts });
 	}
 
-	return request('https://u.y.qq.com/cgi-bin/musicu.fcg', method as Method, opts, 'u');
+	return request({
+		url: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
+		method: method as Method,
+		options: opts,
+		isUUrl: 'u',
+		cookie: customCookie
+	});
 };

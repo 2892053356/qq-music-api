@@ -69,6 +69,11 @@ function getLatestRequestOptions() {
   return latestCall[0] || {};
 }
 
+function getLatestRequestCookie() {
+  const headers = (getLatestRequestOptions().headers || {}) as Record<string, string>;
+  return headers.Cookie || headers.cookie;
+}
+
 function getLatestRequestPayload() {
   const latestOptions = getLatestRequestOptions();
   return latestOptions.data ? JSON.parse(latestOptions.data) : null;
@@ -132,7 +137,7 @@ describe('推荐功能 API 测试', () => {
         .expect(200);
 
       expect(response.body).toHaveProperty('response');
-      expect(getLatestRequestOptions().headers.cookie).toBe('test_cookie=value');
+      expect(getLatestRequestCookie()).toBe('test_cookie=value');
     }, 10000);
 
     test('应该处理上游错误响应', async () => {
@@ -184,7 +189,7 @@ describe('推荐功能 API 测试', () => {
         .expect(200);
 
       expect(response.body).toHaveProperty('response');
-      expect(getLatestRequestOptions().headers.cookie).toBe('test_cookie=value');
+      expect(getLatestRequestCookie()).toBe('test_cookie=value');
     }, 10000);
 
     test('应该处理网络错误', async () => {
@@ -403,7 +408,7 @@ describe('推荐功能 API 测试', () => {
         .expect(200);
 
       expect(response.body).toHaveProperty('response');
-      expect(getLatestRequestOptions().headers.cookie).toBe('user_cookie=value');
+      expect(getLatestRequestCookie()).toBe('user_cookie=value');
     }, 10000);
 
     test('应该处理上游错误', async () => {
@@ -449,8 +454,8 @@ describe('推荐功能 API 测试', () => {
     test('应该要求 songmid 参数', async () => {
       const response = await request(callback).get('/getSimilarSongs').expect(400);
 
-      expect(response.body).toHaveProperty('code', -1);
-      expect(response.body.msg).toContain('songmid');
+      expect(response.body).toHaveProperty('error');
+      expect(response.body.error).toContain('songmid');
     }, 10000);
 
     test('应该处理空字符串 songmid 参数', async () => {
@@ -459,8 +464,8 @@ describe('推荐功能 API 测试', () => {
         .query({ songmid: '' })
         .expect(400);
 
-      expect(response.body).toHaveProperty('code', -1);
-      expect(response.body.msg).toContain('songmid');
+      expect(response.body).toHaveProperty('error');
+      expect(response.body.error).toContain('songmid');
     }, 10000);
 
     test('应该处理数组类型 songmid 参数', async () => {
@@ -527,7 +532,7 @@ describe('推荐功能 API 测试', () => {
         .expect(200);
 
       expect(response.body).toHaveProperty('response');
-      expect(getLatestRequestOptions().headers.cookie).toBe('user_cookie=value');
+      expect(getLatestRequestCookie()).toBe('user_cookie=value');
     }, 10000);
 
     test('应该处理不同的 songmid 格式', async () => {

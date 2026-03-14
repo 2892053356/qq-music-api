@@ -6,6 +6,7 @@ jest.mock('../../../../module');
 describe('routers/context/getHotkey', () => {
   let mockCtx: any;
   let mockNext: jest.Mock;
+  let consoleErrorSpy: jest.SpyInstance;
 
   beforeEach(() => {
     mockCtx = {
@@ -13,7 +14,12 @@ describe('routers/context/getHotkey', () => {
       body: null
     };
     mockNext = jest.fn();
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
     jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    consoleErrorSpy.mockRestore();
   });
 
   test('should call getHotKey with correct props', async () => {
@@ -36,6 +42,7 @@ describe('routers/context/getHotkey', () => {
 
     expect(mockCtx.status).toBe(200);
     expect(mockCtx.body).toEqual({ code: 0, data: { hotkeys: [] } });
+    expect(mockNext).toHaveBeenCalled();
   });
 
   test('should handle DEBUG mode logging', async () => {
@@ -69,10 +76,15 @@ describe('routers/context/getHotkey', () => {
     process.env.DEBUG = originalDebug;
   });
 
-  test('should handle errors from getHotKey', async () => {
+  test('should handle errors from getHotKey and skip next middleware', async () => {
     const mockError = new Error('API error');
     (getHotKey as jest.Mock).mockRejectedValue(mockError);
 
-    await expect(getHotkeyController(mockCtx, mockNext)).rejects.toThrow('API error');
+    await getHotkeyController(mockCtx, mockNext);
+
+    expect(consoleErrorSpy).toHaveBeenCalledWith('Controller error:', expect.any(Error));
+    expect(mockCtx.status).toBe(502);
+    expect(mockCtx.body).toEqual({ error: 'API error' });
+    expect(mockNext).not.toHaveBeenCalled();
   });
 });

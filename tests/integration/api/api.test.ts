@@ -200,6 +200,222 @@ describe('API Integration Tests', () => {
     }, 10000);
   });
 
+  describe('GET /getMusicPlay', () => {
+    test('should return 400 when songmid is missing', async () => {
+      const response = await request(callback).get('/getMusicPlay').expect(400);
+
+      expect(response.body).toEqual({
+        data: {
+          message: 'no songmid'
+        }
+      });
+    });
+
+    test('should return 502 and propagate upstream error when service fails', async () => {
+      mockService.mockRejectedValueOnce(new Error('upstream error'));
+
+      const response = await request(callback)
+        .get('/getMusicPlay')
+        .query({ songmid: 'test-songmid' })
+        .expect(502);
+
+      expect(response.body).toEqual({
+        error: 'upstream error'
+      });
+    });
+
+    test('should return play url map when upstream returns purl', async () => {
+      mockService.mockResolvedValueOnce({
+        data: {
+          req_0: {
+            data: {
+              sip: ['http://ws.stream.qqmusic.qq.com/', 'https://isure.stream.qqmusic.qq.com/'],
+              midurlinfo: [
+                {
+                  songmid: 'test-mid-1',
+                  purl: 'M500test-mid-1test-mid-1.mp3'
+                }
+              ]
+            }
+          }
+        }
+      });
+
+      const response = await request(callback)
+        .get('/getMusicPlay')
+        .query({ songmid: 'test-mid-1' })
+        .expect(200);
+
+      expect(response.body).toEqual({
+        data: {
+          playUrl: {
+            'test-mid-1': {
+              url: 'https://isure.stream.qqmusic.qq.com/M500test-mid-1test-mid-1.mp3'
+            }
+          }
+        }
+      });
+    });
+
+    test('should handle comma-separated songmid list and include missing entries', async () => {
+      mockService.mockResolvedValueOnce({
+        data: {
+          req_0: {
+            data: {
+              sip: ['https://isure.stream.qqmusic.qq.com/'],
+              midurlinfo: [
+                {
+                  songmid: 'a',
+                  purl: 'M500aa.mp3'
+                },
+                {
+                  songmid: 'b',
+                  purl: 'M500bb.mp3'
+                }
+              ]
+            }
+          }
+        }
+      });
+
+      const response = await request(callback)
+        .get('/getMusicPlay')
+        .query({ songmid: 'a,b,c' })
+        .expect(200);
+
+      const playUrl = response.body?.data?.playUrl;
+      expect(playUrl).toHaveProperty('a');
+      expect(playUrl).toHaveProperty('b');
+      expect(playUrl).toHaveProperty('c');
+      expect(playUrl.a.url).toBe('https://isure.stream.qqmusic.qq.com/M500aa.mp3');
+      expect(playUrl.b.url).toBe('https://isure.stream.qqmusic.qq.com/M500bb.mp3');
+      expect(playUrl.c.url).toBe('');
+      expect(playUrl.c.error).toBeTruthy();
+    });
+
+    test('should handle repeated songmid query keys and include missing entries', async () => {
+      mockService.mockResolvedValueOnce({
+        data: {
+          req_0: {
+            data: {
+              sip: ['https://isure.stream.qqmusic.qq.com/'],
+              midurlinfo: [
+                {
+                  songmid: 'a',
+                  purl: 'M500aa.mp3'
+                },
+                {
+                  songmid: 'b',
+                  purl: 'M500bb.mp3'
+                }
+              ]
+            }
+          }
+        }
+      });
+
+      const response = await request(callback)
+        .get('/getMusicPlay?songmid=a&songmid=b&songmid=c')
+        .expect(200);
+
+      const playUrl = response.body?.data?.playUrl;
+      expect(playUrl).toHaveProperty('a');
+      expect(playUrl).toHaveProperty('b');
+      expect(playUrl).toHaveProperty('c');
+      expect(playUrl.a.url).toBe('https://isure.stream.qqmusic.qq.com/M500aa.mp3');
+      expect(playUrl.b.url).toBe('https://isure.stream.qqmusic.qq.com/M500bb.mp3');
+      expect(playUrl.c.url).toBe('');
+      expect(playUrl.c.error).toBeTruthy();
+    });
+
+    test('should build fallback url when purl is empty but filename and vkey exist', async () => {
+      mockService.mockResolvedValueOnce({
+        data: {
+          req_0: {
+            data: {
+              sip: ['https://isure.stream.qqmusic.qq.com/'],
+              midurlinfo: [
+                {
+                  songmid: 'test-mid-2',
+                  purl: '',
+                  filename: 'M500test-mid-2test-mid-2.mp3',
+                  vkey: 'mock-vkey'
+                }
+              ]
+            }
+          }
+        }
+      });
+
+      const response = await request(callback)
+        .get('/getMusicPlay')
+        .query({ songmid: 'test-mid-2' })
+        .expect(200);
+
+      const url = response.body?.data?.playUrl?.['test-mid-2']?.url as string;
+      expect(url).toContain('https://isure.stream.qqmusic.qq.com/M500test-mid-2test-mid-2.mp3?vkey=mock-vkey');
+      expect(url).toContain('&fromtag=66');
+    });
+
+    test('should keep url empty and set error when purl is empty and filename/vkey are missing', async () => {
+      mockService.mockResolvedValueOnce({
+        data: {
+          req_0: {
+            data: {
+              sip: ['https://isure.stream.qqmusic.qq.com/'],
+              midurlinfo: [
+                {
+                  songmid: 'test-mid-empty',
+                  purl: ''
+                }
+              ]
+            }
+          }
+        }
+      });
+
+      const response = await request(callback)
+        .get('/getMusicPlay')
+        .query({ songmid: 'test-mid-empty' })
+        .expect(200);
+
+      const entry = response.body?.data?.playUrl?.['test-mid-empty'];
+      expect(entry?.url).toBe('');
+      expect(entry?.error).toBeTruthy();
+    });
+
+    test('should return full upstream payload when resType is not play', async () => {
+      mockService.mockResolvedValueOnce({
+        data: {
+          req_0: {
+            data: {
+              sip: ['https://isure.stream.qqmusic.qq.com/'],
+              midurlinfo: [
+                {
+                  songmid: 'test-mid-3',
+                  purl: 'M500test-mid-3test-mid-3.mp3'
+                }
+              ]
+            }
+          },
+          extraField: 'mock-extra'
+        }
+      });
+
+      const response = await request(callback)
+        .get('/getMusicPlay')
+        .query({ songmid: 'test-mid-3', resType: 'full' })
+        .expect(200);
+
+      expect(response.body.data.extraField).toBe('mock-extra');
+      expect(response.body.data.playUrl).toEqual({
+        'test-mid-3': {
+          url: 'https://isure.stream.qqmusic.qq.com/M500test-mid-3test-mid-3.mp3'
+        }
+      });
+    });
+  });
+
   describe('POST /batchGetSongInfo', () => {
     test('should batch get song info', async () => {
       mockService

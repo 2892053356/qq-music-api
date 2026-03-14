@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosResponse, Method } from 'axios';
+﻿import axios, { AxiosRequestConfig, AxiosResponse, Method } from 'axios';
 import http from 'http';
 import https from 'https';
 import colors from './colors';
@@ -72,29 +72,36 @@ export interface RequestConfig<TOptions extends AxiosRequestConfig = AxiosReques
 	options?: TOptions;
 	isUUrl?: RequestBaseUrl;
 	headers?: Record<string, string>;
+	/** 鎵嬪姩浼犻€掔殑 Cookie锛堜紭鍏堢骇楂樹簬鍏ㄥ眬 Cookie锛?*/
+	cookie?: string;
 }
 
 function request<TResponse = any, TOptions extends AxiosRequestConfig = AxiosRequestConfig>(
 	configOrUrl: string | RequestConfig<TOptions>,
 	method?: Method | Lowercase<Method>,
 	options?: TOptions,
-	isUUrl: RequestBaseUrl = 'c'
+	isUUrl?: RequestBaseUrl,
+	customCookie?: string
 ): Promise<AxiosResponse<TResponse>> {
 	let url: string;
 	let reqMethod: Method | Lowercase<Method>;
 	let reqOptions: TOptions | undefined;
 	let reqIsUUrl: RequestBaseUrl;
+	let reqCookie: string | undefined;
 
 	if (typeof configOrUrl === 'object') {
 		url = configOrUrl.url || '';
 		reqMethod = configOrUrl.method || 'GET';
 		reqOptions = configOrUrl.options;
 		reqIsUUrl = configOrUrl.isUUrl || 'c';
+		reqCookie = configOrUrl.cookie;
 	} else {
 		url = configOrUrl;
 		reqMethod = method || 'GET';
 		reqOptions = options;
-		reqIsUUrl = isUUrl;
+		reqIsUUrl = isUUrl || 'c';
+		// 浣跨敤鑷畾涔?Cookie锛堝鏋滄彁渚涳級
+		reqCookie = customCookie;
 	}
 
 	let baseURL = '';
@@ -127,10 +134,15 @@ function request<TResponse = any, TOptions extends AxiosRequestConfig = AxiosReq
 		delete (headers as any).cookies;
 	}
 
-	if (!(headers as any).Cookie && !(headers as any).cookie) {
-		if (global.userInfo && global.userInfo.cookie) {
-			(headers as any).Cookie = global.userInfo.cookie;
-		}
+	// Cookie 浼樺厛绾э細鎵嬪姩浼犻€?> 鍏ㄥ眬 Cookie锛堝鏋滃惎鐢級
+	if (!(headers as any).Cookie && (headers as any).cookie) {
+		(headers as any).Cookie = (headers as any).cookie;
+	}
+	if ((headers as any).cookie) {
+		delete (headers as any).cookie;
+	}
+	if (!(headers as any).Cookie && reqCookie) {
+		(headers as any).Cookie = reqCookie;
 	}
 
 	config.headers = headers;
@@ -139,3 +151,5 @@ function request<TResponse = any, TOptions extends AxiosRequestConfig = AxiosReq
 }
 
 export default request;
+
+
