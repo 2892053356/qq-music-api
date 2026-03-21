@@ -1,3 +1,12 @@
+## 2.2.11 (2026-03-21)
+
+
+### Bug Fixes
+
+* Dockerfile to reduce vulnerabilities ([#14](https://github.com/sansenjian/qq-music-api/issues/14)) ([a1e439d](https://github.com/sansenjian/qq-music-api/commit/a1e439d25bd5f19c93aeb4f67a6f26ba660248d0))
+
+
+
 ## 2.2.10 (2026-03-14)
 
 
